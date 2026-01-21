@@ -114,58 +114,8 @@ export default function PostDetail() {
             Comments <span className="text-muted-foreground text-sm font-sans font-normal ml-2">({comments?.length || 0})</span>
           </h3>
 
-          {/* Comment Form */}
-          <div className="mb-10 bg-muted/30 p-4 sm:p-6 rounded-2xl border border-border/50">
-            {isAuthenticated ? (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 flex flex-col-reverse gap-4">
-                  <div className="flex justify-end">
-                    <Button 
-                      type="submit" 
-                      disabled={isCreatingComment || !form.formState.isDirty}
-                      className="rounded-full px-6 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
-                    >
-                      {isCreatingComment ? "Posting..." : (
-                        <>
-                          Post Comment <SendHorizontal className="ml-2 h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem className="space-y-0">
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Share your thoughts anonymously..." 
-                            className="min-h-[100px] resize-none bg-background border-border/60 focus:border-primary/50 text-base"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </form>
-              </Form>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
-                <Lock className="h-8 w-8 text-muted-foreground/50" />
-                <div>
-                  <p className="font-medium text-foreground">Sign in to join the conversation</p>
-                  <p className="text-sm text-muted-foreground mt-1">Comments are anonymous but require an account.</p>
-                </div>
-                <Link href="/api/login">
-                  <Button variant="outline" className="rounded-full">Log In to Comment</Button>
-                </Link>
-              </div>
-            )}
-          </div>
-
           {/* Comments List */}
-          <div className="space-y-6 flex flex-col-reverse">
+          <div className="space-y-6 flex flex-col">
             {commentsLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex gap-4 mb-6">
@@ -201,6 +151,56 @@ export default function PostDetail() {
                   </div>
                 </div>
               ))
+            )}
+          </div>
+
+          {/* Comment Form */}
+          <div className="mt-10 bg-muted/30 p-4 sm:p-6 rounded-2xl border border-border/50">
+            {isAuthenticated ? (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="content"
+                    render={({ field }) => (
+                      <FormItem className="space-y-0">
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Share your thoughts anonymously..." 
+                            className="min-h-[100px] resize-none bg-background border-border/60 focus:border-primary/50 text-base"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex justify-end">
+                    <Button 
+                      type="submit" 
+                      disabled={isCreatingComment || !form.formState.isDirty}
+                      className="rounded-full px-6 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
+                    >
+                      {isCreatingComment ? "Posting..." : (
+                        <>
+                          Post Comment <SendHorizontal className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                <Lock className="h-8 w-8 text-muted-foreground/50" />
+                <div>
+                  <p className="font-medium text-foreground">Sign in to join the conversation</p>
+                  <p className="text-sm text-muted-foreground mt-1">Comments are anonymous but require an account.</p>
+                </div>
+                <Link href="/api/login">
+                  <Button variant="outline" className="rounded-full">Log In to Comment</Button>
+                </Link>
+              </div>
             )}
           </div>
         </section>

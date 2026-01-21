@@ -23,6 +23,9 @@ export function PostCard({ post }: PostCardProps) {
             <CardTitle className="font-serif text-lg leading-snug line-clamp-2 text-balance">
               {post.title}
             </CardTitle>
+            <Badge variant="outline" className="capitalize shrink-0">
+              {post.category}
+            </Badge>
           </div>
         </CardHeader>
         <CardContent className="pb-3">

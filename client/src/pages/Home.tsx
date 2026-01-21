@@ -4,24 +4,53 @@ import { BottomNav } from "@/components/BottomNav";
 import { PostCard } from "@/components/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "wouter";
-import { PenSquare } from "lucide-react";
+import { PenSquare, Filter } from "lucide-react";
+import { useState } from "react";
+
+const CATEGORIES = [
+  { value: "all", label: "All Categories" },
+  { value: "travel", label: "Travel" },
+  { value: "health", label: "Health" },
+  { value: "food", label: "Food" },
+  { value: "others", label: "Others" },
+];
 
 export default function Home() {
-  const { data: posts, isLoading, isError } = usePosts();
+  const [category, setCategory] = useState<string>("all");
+  const { data: posts, isLoading, isError } = usePosts(category === "all" ? undefined : category);
 
   return (
     <div className="min-h-screen bg-background pb-20 sm:pb-10">
       <Navbar />
       
       <main className="container mx-auto px-4 pt-8 max-w-3xl">
-        <div className="flex flex-col gap-2 mb-8 text-center sm:text-left">
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground">
-            Community Feed
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Share your thoughts anonymously with fellow Japanese residents.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div className="flex flex-col gap-2 text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground">
+              Community Feed
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Share your thoughts anonymously with fellow Japanese residents.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-center sm:self-end">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-[180px] bg-card border-border/50 rounded-xl">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {isLoading ? (

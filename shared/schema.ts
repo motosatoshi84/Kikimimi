@@ -47,7 +47,9 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 }));
 
 // Schemas
-export const insertPostSchema = createInsertSchema(posts).omit({ 
+export const insertPostSchema = createInsertSchema(posts).extend({
+  category: z.enum(["travel", "health", "food", "others"]),
+}).omit({ 
   id: true, 
   createdAt: true, 
   authorId: true, // Set by backend

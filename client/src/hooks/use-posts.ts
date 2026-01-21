@@ -7,11 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 // POSTS HOOKS
 // ============================================
 
-export function usePosts() {
+export function usePosts(category?: string) {
   return useQuery({
-    queryKey: [api.posts.list.path],
+    queryKey: [api.posts.list.path, category],
     queryFn: async () => {
-      const res = await fetch(api.posts.list.path, { credentials: "include" });
+      const url = category ? `${api.posts.list.path}?category=${category}` : api.posts.list.path;
+      const res = await fetch(url, { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch posts");
       const data = await res.json();
       return api.posts.list.responses[200].parse(data);

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, Send } from "lucide-react";
@@ -15,6 +16,13 @@ import { api } from "@shared/routes";
 import { useEffect } from "react";
 
 const formSchema = api.posts.create.input;
+
+const CATEGORIES = [
+  { value: "travel", label: "Travel" },
+  { value: "health", label: "Health" },
+  { value: "food", label: "Food" },
+  { value: "others", label: "Others" },
+];
 
 export default function CreatePost() {
   const [, setLocation] = useLocation();
@@ -26,6 +34,7 @@ export default function CreatePost() {
     defaultValues: {
       title: "",
       content: "",
+      category: "others",
     },
   });
 
@@ -61,26 +70,50 @@ export default function CreatePost() {
         <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-semibold">Title</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="What's on your mind?" 
-                        className="text-lg font-medium px-4 py-6 bg-background border-border/60 focus:border-primary/50 rounded-xl"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Keep it short and descriptive.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">Title</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="What's on your mind?" 
+                          className="text-lg font-medium px-4 py-6 bg-background border-border/60 focus:border-primary/50 rounded-xl"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">Category</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="h-12 bg-background border-border/60 rounded-xl">
+                            <SelectValue placeholder="Select a category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CATEGORIES.map((cat) => (
+                            <SelectItem key={cat.value} value={cat.value}>
+                              {cat.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
               <FormField
                 control={form.control}

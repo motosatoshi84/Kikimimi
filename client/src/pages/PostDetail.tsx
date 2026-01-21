@@ -118,23 +118,7 @@ export default function PostDetail() {
           <div className="mb-10 bg-muted/30 p-4 sm:p-6 rounded-2xl border border-border/50">
             {isAuthenticated ? (
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Share your thoughts anonymously..." 
-                            className="min-h-[100px] resize-none bg-background border-border/60 focus:border-primary/50 text-base"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 flex flex-col-reverse gap-4">
                   <div className="flex justify-end">
                     <Button 
                       type="submit" 
@@ -148,6 +132,22 @@ export default function PostDetail() {
                       )}
                     </Button>
                   </div>
+                  <FormField
+                    control={form.control}
+                    name="content"
+                    render={({ field }) => (
+                      <FormItem className="space-y-0">
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Share your thoughts anonymously..." 
+                            className="min-h-[100px] resize-none bg-background border-border/60 focus:border-primary/50 text-base"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </form>
               </Form>
             ) : (
@@ -165,10 +165,10 @@ export default function PostDetail() {
           </div>
 
           {/* Comments List */}
-          <div className="space-y-6">
+          <div className="space-y-6 flex flex-col-reverse">
             {commentsLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex gap-4">
+                <div key={i} className="flex gap-4 mb-6">
                   <Skeleton className="h-10 w-10 rounded-full" />
                   <div className="space-y-2 flex-1">
                     <Skeleton className="h-4 w-1/4" />
@@ -180,7 +180,7 @@ export default function PostDetail() {
               <p className="text-muted-foreground italic text-center py-8">No comments yet. Be the first to say something!</p>
             ) : (
               comments?.map((comment) => (
-                <div key={comment.id} className="group flex gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div key={comment.id} className="group flex gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300 mb-6 last:mb-0">
                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border border-border/50 bg-muted">
                     <AvatarFallback className="text-[10px] sm:text-xs font-mono text-muted-foreground">
                       {comment.ipOctet}

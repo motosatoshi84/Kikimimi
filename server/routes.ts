@@ -28,7 +28,8 @@ export async function registerRoutes(
 
   // Posts
   app.get(api.posts.list.path, async (req, res) => {
-    const posts = await storage.getPosts();
+    const category = req.query.category as string | undefined;
+    const posts = await storage.getPosts(category);
     res.json(posts);
   });
 

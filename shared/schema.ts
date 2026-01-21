@@ -11,6 +11,7 @@ export const posts = pgTable("posts", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
+  category: text("category").notNull().default("others"),
   authorId: varchar("author_id").notNull(), // Links to auth users
   ipOctet: varchar("ip_octet").notNull(), // Last 2 octets of IP
   createdAt: timestamp("created_at").defaultNow(),

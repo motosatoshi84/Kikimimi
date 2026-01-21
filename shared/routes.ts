@@ -22,6 +22,9 @@ export const api = {
     list: {
       method: 'GET' as const,
       path: '/api/posts',
+      input: z.object({
+        category: z.string().optional(),
+      }).optional(),
       responses: {
         200: z.array(z.custom<typeof posts.$inferSelect>()),
       },

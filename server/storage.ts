@@ -38,7 +38,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getComments(postId: number): Promise<Comment[]> {
-    return await db.select().from(comments).where(eq(comments.postId, postId)).orderBy(desc(comments.createdAt));
+    return await db.select().from(comments).where(eq(comments.postId, postId)).orderBy(comments.createdAt);
   }
 
   async createComment(postId: number, insertComment: InsertComment, authorId: string, ipOctet: string): Promise<Comment> {

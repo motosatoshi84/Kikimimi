@@ -82,7 +82,7 @@ export default function PostDetail() {
         </Link>
 
         {/* Post Content */}
-        <article className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <article className="mb-12 sticky top-0 bg-background z-10 pt-4 pb-4 animate-in fade-in slide-in-from-bottom-4 duration-500 border-b shadow-sm">
           <header className="mb-6 space-y-4">
             <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground leading-tight text-balance">
               {post.title}

@@ -1,38 +1,49 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { db } from "./db";
+import { posts, comments, type Post, type InsertPost, type Comment, type InsertComment } from "@shared/schema";
+import { eq, desc } from "drizzle-orm";
+import { authStorage, type IAuthStorage } from "./replit_integrations/auth/storage";
 
-// modify the interface with any CRUD methods
-// you might need
-
-export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+export interface IStorage extends IAuthStorage {
+  getPosts(): Promise<Post[]>;
+  getPost(id: number): Promise<Post | undefined>;
+  createPost(post: InsertPost, authorId: string, ipOctet: string): Promise<Post>;
+  getComments(postId: number): Promise<Comment[]>;
+  createComment(postId: number, comment: InsertComment, authorId: string, ipOctet: string): Promise<Comment>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+export class DatabaseStorage implements IStorage {
+  // Inherit auth storage methods
+  getUser = authStorage.getUser.bind(authStorage);
+  upsertUser = authStorage.upsertUser.bind(authStorage);
 
-  constructor() {
-    this.users = new Map();
+  async getPosts(): Promise<Post[]> {
+    return await db.select().from(posts).orderBy(desc(posts.createdAt));
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getPost(id: number): Promise<Post | undefined> {
+    const [post] = await db.select().from(posts).where(eq(posts.id, id));
+    return post;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async createPost(insertPost: InsertPost, authorId: string, ipOctet: string): Promise<Post> {
+    const [post] = await db
+      .insert(posts)
+      .values({ ...insertPost, authorId, ipOctet })
+      .returning();
+    return post;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getComments(postId: number): Promise<Comment[]> {
+    return await db.select().from(comments).where(eq(comments.postId, postId)).orderBy(desc(comments.createdAt));
+  }
+
+  async createComment(postId: number, insertComment: InsertComment, authorId: string, ipOctet: string): Promise<Comment> {
+    const [comment] = await db
+      .insert(comments)
+      .values({ ...insertComment, postId, authorId, ipOctet })
+      .returning();
+    return comment;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

@@ -83,8 +83,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        serif: ["var(--font-serif)"],
+        sans: ["'Noto Sans JP'", "var(--font-sans)"],
+        serif: ["'Shippori Mincho'", "var(--font-serif)"],
         mono: ["var(--font-mono)"],
       },
       keyframes: {

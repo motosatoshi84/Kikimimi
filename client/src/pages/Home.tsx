@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Link } from "wouter";
 import { PenSquare, Filter } from "lucide-react";
 import { useState } from "react";
+import jpLogo from "@assets/kikimimi_1769271006291.png";
+import krLogo from "@assets/kikimimi_Korean_1769271043542.png";
 
 const CATEGORIES = [
   { value: "all", label: "All Categories" },
@@ -27,13 +29,23 @@ export default function Home() {
       <Navbar />
       
       <main className="container mx-auto px-4 pt-8 max-w-3xl">
+        <div className="mb-12 text-center space-y-4 animate-in fade-in slide-in-from-top-4 duration-700">
+          <img 
+            src={community === "japan" ? jpLogo : krLogo} 
+            alt="Kikimimi" 
+            className="h-24 sm:h-32 mx-auto object-contain mb-4"
+          />
+        </div>
+
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div className="flex flex-col gap-2 text-center sm:text-left">
             <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground">
               Community Feed
             </h1>
             <p className="text-muted-foreground text-lg">
-              Share your thoughts anonymously with fellow Japanese residents.
+              {community === "japan" 
+                ? "Share your thoughts anonymously with fellow Japanese residents."
+                : "Share your thoughts anonymously with fellow Korean residents."}
             </p>
           </div>
 

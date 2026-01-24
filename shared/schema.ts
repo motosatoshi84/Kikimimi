@@ -12,15 +12,7 @@ export const posts = pgTable("posts", {
   title: text("title").notNull(),
   content: text("content").notNull(),
   category: text("category").notNull().default("others"),
-  authorId: varchar("author_id").notNull(), // Links to auth users
-  ipOctet: varchar("ip_octet").notNull(), // Last 2 octets of IP
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
-  content: text("content").notNull(),
-  postId: integer("post_id").notNull(),
+  community: text("community").notNull().default("japan"),
   authorId: varchar("author_id").notNull(), // Links to auth users
   ipOctet: varchar("ip_octet").notNull(), // Last 2 octets of IP
   createdAt: timestamp("created_at").defaultNow(),
@@ -49,6 +41,7 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 // Schemas
 export const insertPostSchema = createInsertSchema(posts).extend({
   category: z.enum(["travel", "health", "food", "others"]),
+  community: z.enum(["japan", "korea"]),
 }).omit({ 
   id: true, 
   createdAt: true, 

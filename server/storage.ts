@@ -4,7 +4,7 @@ import { eq, desc } from "drizzle-orm";
 import { authStorage, type IAuthStorage } from "./replit_integrations/auth/storage";
 
 export interface IStorage extends IAuthStorage {
-  getPosts(category?: string): Promise<Post[]>;
+  getPosts(community?: string, category?: string): Promise<Post[]>;
   getPost(id: number): Promise<Post | undefined>;
   createPost(post: InsertPost, authorId: string, ipOctet: string): Promise<Post>;
   getComments(postId: number): Promise<Comment[]>;
@@ -16,10 +16,10 @@ export class DatabaseStorage implements IStorage {
   getUser = authStorage.getUser.bind(authStorage);
   upsertUser = authStorage.upsertUser.bind(authStorage);
 
-  async getPosts(category?: string): Promise<Post[]> {
-    let query = db.select().from(posts);
+  async getPosts(community: string = "japan", category?: string): Promise<Post[]> {
+    let query = db.select().from(posts).where(eq(posts.community, community));
     if (category) {
-      query = query.where(eq(posts.category, category)) as any;
+      query = query.where(and(eq(posts.community, community), eq(posts.category, category))) as any;
     }
     return await query.orderBy(desc(posts.createdAt));
   }

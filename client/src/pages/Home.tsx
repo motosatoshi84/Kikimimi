@@ -18,8 +18,9 @@ const CATEGORIES = [
 ];
 
 export default function Home() {
+  const [community] = useState<string>(() => localStorage.getItem("community") || "japan");
   const [category, setCategory] = useState<string>("all");
-  const { data: posts, isLoading, isError } = usePosts(category === "all" ? undefined : category);
+  const { data: posts, isLoading, isError } = usePosts(community, category === "all" ? undefined : category);
 
   return (
     <div className="min-h-screen bg-background pb-20 sm:pb-10">

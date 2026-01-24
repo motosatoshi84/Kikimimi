@@ -29,12 +29,14 @@ export default function CreatePost() {
   const { mutate: createPost, isPending } = useCreatePost();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
+  const [community] = useState<string>(() => localStorage.getItem("community") || "japan");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       content: "",
       category: "others",
+      community: community as "japan" | "korea",
     },
   });
 

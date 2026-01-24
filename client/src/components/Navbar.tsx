@@ -1,8 +1,9 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { PenSquare, LogIn, LogOut, MessageSquareText } from "lucide-react";
+import { PenSquare, LogIn, LogOut, MessageSquareText, Globe2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,23 +16,41 @@ import {
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [location] = useLocation();
+  const [community, setCommunity] = useState<string>(() => localStorage.getItem("community") || "japan");
+
+  const toggleCommunity = () => {
+    const newComm = community === "japan" ? "korea" : "japan";
+    setCommunity(newComm);
+    localStorage.setItem("community", newComm);
+    window.location.reload(); 
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2 transition-opacity hover:opacity-80">
           <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
-            <MessageSquareText className="h-5 w-5" />
+            <Globe2 className="h-5 w-5" />
           </div>
           <span className="font-serif font-bold text-xl tracking-tight hidden sm:inline-block">
-            Kizuna <span className="text-muted-foreground font-sans text-xs font-normal ml-1">US Japan Community</span>
+            {community === "japan" ? "JP Resident" : "KR Resident"} <span className="text-muted-foreground font-sans text-xs font-normal ml-1">{community === "japan" ? "US Japan Community" : "US Korea Community"}</span>
           </span>
           <span className="font-serif font-bold text-xl tracking-tight sm:hidden">
-            Kizuna
+            {community === "japan" ? "JP" : "KR"}
           </span>
         </Link>
 
         <nav className="flex items-center gap-2 sm:gap-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={toggleCommunity}
+            className="rounded-full px-4 border border-border/50 hover:bg-muted"
+          >
+            <span className="mr-2">{community === "japan" ? "🇯🇵" : "🇰🇷"}</span>
+            <span className="hidden sm:inline">Switch to {community === "japan" ? "Korean" : "Japanese"}</span>
+          </Button>
+
           {isAuthenticated ? (
             <>
               {location !== "/new" && (

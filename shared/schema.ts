@@ -2,7 +2,7 @@ import { pgTable, text, serial, integer, boolean, timestamp, varchar } from "dri
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { users } from "./models/auth";
-import { relations } from "drizzle-orm";
+import { relations, and } from "drizzle-orm";
 
 // Re-export auth models
 export * from "./models/auth";
@@ -13,6 +13,15 @@ export const posts = pgTable("posts", {
   content: text("content").notNull(),
   category: text("category").notNull().default("others"),
   community: text("community").notNull().default("japan"),
+  authorId: varchar("author_id").notNull(), // Links to auth users
+  ipOctet: varchar("ip_octet").notNull(), // Last 2 octets of IP
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const comments = pgTable("comments", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(),
+  postId: integer("post_id").notNull(),
   authorId: varchar("author_id").notNull(), // Links to auth users
   ipOctet: varchar("ip_octet").notNull(), // Last 2 octets of IP
   createdAt: timestamp("created_at").defaultNow(),

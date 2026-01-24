@@ -26,10 +26,10 @@ export async function registerRoutes(
   await setupAuth(app);
   registerAuthRoutes(app);
 
-  // Posts
   app.get(api.posts.list.path, async (req, res) => {
+    const community = req.query.community as string || "japan";
     const category = req.query.category as string | undefined;
-    const posts = await storage.getPosts(category);
+    const posts = await storage.getPosts(community, category);
     res.json(posts);
   });
 

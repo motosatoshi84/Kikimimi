@@ -12,6 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import jpLogo from "@assets/kikimimi_1769271006291.png";
+import krLogo from "@assets/kikimimi_Korean_1769271043542.png";
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -29,15 +31,11 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2 transition-opacity hover:opacity-80">
-          <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
-            <Globe2 className="h-5 w-5" />
-          </div>
-          <span className="font-serif font-bold text-xl tracking-tight hidden sm:inline-block">
-            {community === "japan" ? "JP Resident" : "KR Resident"} <span className="text-muted-foreground font-sans text-xs font-normal ml-1">{community === "japan" ? "US Japan Community" : "US Korea Community"}</span>
-          </span>
-          <span className="font-serif font-bold text-xl tracking-tight sm:hidden">
-            {community === "japan" ? "JP" : "KR"}
-          </span>
+          <img 
+            src={community === "japan" ? jpLogo : krLogo} 
+            alt="Kikimimi" 
+            className="h-10 w-auto object-contain"
+          />
         </Link>
 
         <nav className="flex items-center gap-2 sm:gap-4">

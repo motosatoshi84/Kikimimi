@@ -23,6 +23,7 @@ export const api = {
       method: 'GET' as const,
       path: '/api/posts',
       input: z.object({
+        community: z.string().optional(),
         category: z.string().optional(),
       }).optional(),
       responses: {

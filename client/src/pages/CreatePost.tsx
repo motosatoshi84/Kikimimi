@@ -13,7 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft, Send } from "lucide-react";
 import { api } from "@shared/routes";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const formSchema = api.posts.create.input;
 

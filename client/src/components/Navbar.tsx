@@ -87,12 +87,12 @@ export function Navbar() {
               </DropdownMenu>
             </>
           ) : (
-            <Link href="/api/login">
+            <a href="/login">
               <Button variant="secondary" className="font-medium rounded-full">
                 <LogIn className="mr-2 h-4 w-4" />
                 Login
               </Button>
-            </Link>
+            </a>
           )}
         </nav>
       </div>

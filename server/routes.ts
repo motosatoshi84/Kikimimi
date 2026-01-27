@@ -131,6 +131,19 @@ export async function registerRoutes(
     }
   });
 
+  // Notifications
+  app.get(api.notifications.list.path, isAuthenticated, async (req: any, res) => {
+    const userId = req.user.claims.sub;
+    const notifications = await storage.getNotifications(userId);
+    res.json(notifications);
+  });
+
+  app.patch(api.notifications.markRead.path, isAuthenticated, async (req: any, res) => {
+    const notificationId = Number(req.params.id);
+    await storage.markNotificationRead(notificationId);
+    res.json({ success: true });
+  });
+
   // Seed if needed
   seedDatabase();
 

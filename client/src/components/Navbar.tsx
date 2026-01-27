@@ -1,9 +1,12 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { PenSquare, LogIn, LogOut, MessageSquareText, Globe2 } from "lucide-react";
+import { PenSquare, LogIn, LogOut, MessageSquareText, Globe2, Bell } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { Notification } from "@shared/schema";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,11 +17,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import jpLogo from "@assets/kikimimi_1769271006291.png";
 import krLogo from "@assets/kikimimi_Korean_1769271043542.png";
+import { formatDistanceToNow } from "date-fns";
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [community, setCommunity] = useState<string>(() => localStorage.getItem("community") || "japan");
+
+  const { data: notifications } = useQuery<Notification[]>({
+    queryKey: ["/api/notifications"],
+    enabled: isAuthenticated,
+  });
+
+  const markReadMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await fetch(`/api/notifications/${id}/read`, { method: "PATCH" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+    },
+  });
+
+  const unreadCount = notifications?.filter(n => !n.isRead).length || 0;
 
   const toggleCommunity = () => {
     const newComm = community === "japan" ? "korea" : "japan";
@@ -51,6 +71,46 @@ export function Navbar() {
 
           {isAuthenticated ? (
             <>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative rounded-full">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-bold">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications?.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-muted-foreground">
+                        No notifications yet
+                      </div>
+                    ) : (
+                      notifications?.map((notification) => (
+                        <DropdownMenuItem
+                          key={notification.id}
+                          className={`flex flex-col items-start gap-1 p-3 cursor-pointer ${!notification.isRead ? "bg-muted/50" : ""}`}
+                          onClick={() => {
+                            if (!notification.isRead) markReadMutation.mutate(notification.id);
+                            setLocation(`/post/${notification.postId}`);
+                          }}
+                        >
+                          <p className="text-sm font-medium leading-none">{notification.content}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {notification.createdAt && formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                          </p>
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {location !== "/new" && (
                 <Link href="/new">
                   <Button variant="default" size="sm" className="hidden sm:flex rounded-full shadow-md shadow-primary/20">

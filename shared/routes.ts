@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertPostSchema, insertCommentSchema, posts, comments } from './schema';
+import { insertPostSchema, insertCommentSchema, posts, comments, notifications } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -64,6 +64,25 @@ export const api = {
       responses: {
         201: z.custom<typeof comments.$inferSelect>(),
         400: errorSchemas.validation,
+        401: errorSchemas.unauthorized,
+        404: errorSchemas.notFound,
+      },
+    },
+  },
+  notifications: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/notifications',
+      responses: {
+        200: z.array(z.custom<typeof notifications.$inferSelect>()),
+        401: errorSchemas.unauthorized,
+      },
+    },
+    markRead: {
+      method: 'PATCH' as const,
+      path: '/api/notifications/:id/read',
+      responses: {
+        200: z.object({ success: z.boolean() }),
         401: errorSchemas.unauthorized,
         404: errorSchemas.notFound,
       },

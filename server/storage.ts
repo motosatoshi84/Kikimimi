@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { posts, comments, type Post, type InsertPost, type Comment, type InsertComment } from "@shared/schema";
+import { posts, comments, notifications, type Post, type InsertPost, type Comment, type InsertComment, type Notification, type InsertNotification } from "@shared/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { authStorage, type IAuthStorage } from "./replit_integrations/auth/storage";
 
@@ -9,6 +9,8 @@ export interface IStorage extends IAuthStorage {
   createPost(post: InsertPost, authorId: string, ipOctet: string): Promise<Post>;
   getComments(postId: number): Promise<Comment[]>;
   createComment(postId: number, comment: InsertComment, authorId: string, ipOctet: string): Promise<Comment>;
+  getNotifications(userId: string): Promise<Notification[]>;
+  markNotificationRead(notificationId: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -50,7 +52,35 @@ export class DatabaseStorage implements IStorage {
       .insert(comments)
       .values({ ...insertComment, postId, authorId, ipOctet })
       .returning();
+
+    // Trigger notification
+    const post = await this.getPost(postId);
+    if (post && post.authorId !== authorId) {
+      await db.insert(notifications).values({
+        userId: post.authorId,
+        type: "reply",
+        content: `Someone replied to your post: ${post.title.substring(0, 30)}${post.title.length > 30 ? "..." : ""}`,
+        postId: postId,
+        commentId: comment.id,
+      });
+    }
+
     return comment;
+  }
+
+  async getNotifications(userId: string): Promise<Notification[]> {
+    return await db
+      .select()
+      .from(notifications)
+      .where(eq(notifications.userId, userId))
+      .orderBy(desc(notifications.createdAt));
+  }
+
+  async markNotificationRead(notificationId: number): Promise<void> {
+    await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.id, notificationId));
   }
 }
 

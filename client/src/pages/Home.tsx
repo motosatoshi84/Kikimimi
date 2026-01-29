@@ -29,14 +29,73 @@ export default function Home() {
       <Navbar />
       
       <main className="container mx-auto px-4 pt-8 max-w-3xl">
+        {/* Rules Section */}
+        <div className="mb-12 bg-muted/30 rounded-2xl border border-border/50 p-6 sm:p-8 animate-in fade-in slide-in-from-top-4 duration-700">
+          <section className="space-y-6 text-sm sm:text-base leading-relaxed text-foreground/80">
+            <div className="space-y-3">
+              <h2 className="text-xl font-serif font-bold text-foreground">このサイトについて</h2>
+              <p>
+                このサイトは、アメリカ在住の日本人が匿名で投稿できる安全な場所です。<br />
+                相談やおすすめを聞きたいとき、または考えや気持ちを共有したいときに、自由に投稿し、他の利用者からの意見や回答を受け取ることができます。
+              </p>
+              <p>
+                ユーザー名は表示されず、個人が特定されることはありません。投稿は他のユーザーからは匿名で表示されます。
+              </p>
+              <p className="text-xs text-muted-foreground">
+                本サイトを利用することにより、すべての内容はユーザーが投稿したものであり、一般的な情報提供を目的としたものであることをご理解ください。<br />
+                本サイトの利用は、ご自身の判断と責任において行ってください。
+              </p>
+            </div>
+
+            <div className="border-t border-border/30 pt-6 space-y-4">
+              <h2 className="text-xl font-serif font-bold text-foreground font-mono italic tracking-tight">⸻ ルール ⸻</h2>
+              <p>このコミュニティを安全で心地よい場所に保つため、以下のルールを守ってください。</p>
+              <ol className="list-decimal list-inside space-y-3 pl-2">
+                <li>
+                  <span className="font-bold text-foreground">敬意をもって接してください</span>
+                  <p className="pl-5 text-sm">誹謗中傷、嫌がらせ、ヘイトスピーチ、個人攻撃は禁止です。</p>
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">個人情報を投稿しないでください</span>
+                  <p className="pl-5 text-sm">本名、住所、電話番号、勤務先など、自分や他人を特定できる情報は投稿しないでください。</p>
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">差別的または有害な内容の禁止</span>
+                  <p className="pl-5 text-sm">人種差別、性差別、暴力、違法行為を助長する投稿は削除されます。</p>
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">なりすましの禁止</span>
+                  <p className="pl-5 text-sm">他人になりすましたり、虚偽の肩書きや権威を主張する行為は禁止です。</p>
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">アドバイスは個人の経験に基づくものです</span>
+                  <p className="pl-5 text-sm">すべての回答は個人の体験や意見に基づくものであり、医療・法律・金融などの専門的な助言を提供するものではありません。</p>
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">匿名性を尊重してください</span>
+                  <p className="pl-5 text-sm">他のユーザーの身元を特定・追跡・暴露しようとする行為は禁止です。</p>
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">モデレーションについて</span>
+                  <p className="pl-5 text-sm">ルールに違反する投稿やコメントは、予告なく削除される場合があります。繰り返し違反があった場合、利用が制限されることがあります。</p>
+                </li>
+              </ol>
+            </div>
+
+            <p className="text-xs text-muted-foreground border-t border-border/30 pt-4 text-center">
+              ⸻ 本サイトは、ユーザーが投稿した内容の正確性、結果、またはそれに伴う影響について一切の責任を負いません。 ⸻
+            </p>
+          </section>
+        </div>
+
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div className="flex flex-col gap-2 text-center sm:text-left">
             <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground">
-              Community Feed
+              {community === "japan" ? "コミュニティフィード" : "Community Feed"}
             </h1>
             <p className="text-muted-foreground text-lg">
               {community === "japan" 
-                ? "Share your thoughts anonymously with fellow Japanese residents."
+                ? "匿名で現地の日本人と情報を共有しましょう。"
                 : "Share your thoughts anonymously with fellow Korean residents."}
             </p>
           </div>

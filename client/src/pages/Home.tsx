@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Link } from "wouter";
 import { PenSquare, Filter } from "lucide-react";
 import { useState } from "react";
-import jpLogo from "@assets/kikimimi_1769271006291.png";
-import krLogo from "@assets/kikimimi_Korean_1769271043542.png";
+import jpLogo from "@assets/kikimimi_1769648273469.png";
+import krLogo from "@assets/kikimimi_Korean_1769648273468.png";
 
 const CATEGORIES = [
   { value: "all", label: "All Categories" },

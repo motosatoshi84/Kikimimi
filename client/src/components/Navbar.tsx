@@ -15,8 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import jpLogo from "@assets/kikimimi_1769271006291.png";
-import krLogo from "@assets/kikimimi_Korean_1769271043542.png";
+import jpLogo from "@assets/kikimimi_1769648273469.png";
+import krLogo from "@assets/kikimimi_Korean_1769648273468.png";
 import { formatDistanceToNow } from "date-fns";
 
 export function Navbar() {
@@ -49,12 +49,12 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+      <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2 transition-opacity hover:opacity-80">
           <img 
             src={community === "japan" ? jpLogo : krLogo} 
             alt="Kikimimi" 
-            className="h-14 w-auto object-contain"
+            className="h-20 w-auto object-contain"
           />
         </Link>
 

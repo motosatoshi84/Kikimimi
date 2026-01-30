@@ -18,6 +18,7 @@ import {
 import jpLogo from "@assets/kikimimi_1769648273469.png";
 import krLogo from "@assets/kikimimi_Korean_1769648273468.png";
 import { formatDistanceToNow } from "date-fns";
+import { ja, ko } from "date-fns/locale";
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -170,5 +171,4 @@ export function Navbar() {
       </div>
     </header>
   );
-}
 }

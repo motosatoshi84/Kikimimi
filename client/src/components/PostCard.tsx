@@ -1,19 +1,41 @@
 import { Link } from "wouter";
 import type { Post } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
+import { ja, ko } from "date-fns/locale";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Clock } from "lucide-react";
+import { useState } from "react";
 
 interface PostCardProps {
   post: Post;
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const [community] = useState<string>(() => localStorage.getItem("community") || "japan");
+
   // Truncate content for preview
   const preview = post.content.length > 140 
     ? post.content.substring(0, 140) + "..." 
     : post.content;
+
+  const getCategoryLabel = (cat: string) => {
+    if (community === "japan") {
+      switch (cat) {
+        case "travel": return "旅行";
+        case "health": return "健康";
+        case "food": return "グルメ";
+        default: return "その他";
+      }
+    } else {
+      switch (cat) {
+        case "travel": return "여행";
+        case "health": return "건강";
+        case "food": return "맛집";
+        default: return "기타";
+      }
+    }
+  };
 
   return (
     <Link href={`/post/${post.id}`} className="block transition-transform hover:-translate-y-1 active:scale-[0.99] duration-200">
@@ -24,7 +46,7 @@ export function PostCard({ post }: PostCardProps) {
               {post.title}
             </CardTitle>
             <Badge variant="outline" className="capitalize shrink-0">
-              {post.category}
+              {getCategoryLabel(post.category)}
             </Badge>
           </div>
         </CardHeader>
@@ -40,12 +62,15 @@ export function PostCard({ post }: PostCardProps) {
             </Badge>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              {post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }) : 'Just now'}
+              {post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { 
+                addSuffix: true,
+                locale: community === "japan" ? ja : ko
+              }) : (community === "japan" ? "今すぐ" : "방금 전")}
             </span>
           </div>
           
           <div className="flex items-center text-primary font-medium">
-             Read more
+             {community === "japan" ? "詳しく読む" : "자세히 보기"}
           </div>
         </CardFooter>
       </Card>

@@ -30,6 +30,29 @@ export default function CreatePost() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   const [community] = useState<string>(() => localStorage.getItem("community") || "japan");
+  
+  const t = {
+    title: community === "japan" ? "新規投稿" : "새 게시글",
+    labelTitle: community === "japan" ? "タイトル" : "제목",
+    placeholderTitle: community === "japan" ? "何を考えていますか？" : "무슨 생각을 하고 계신가요?",
+    labelCategory: community === "japan" ? "カテゴリー" : "카테고리",
+    placeholderCategory: community === "japan" ? "カテゴリーを選択してください" : "카테고리를 선택하세요",
+    labelContent: community === "japan" ? "内容" : "내용",
+    placeholderContent: community === "japan" ? "あなたの話を共有してください..." : "이야기를 들려주세요...",
+    anonymity: community === "japan" ? "あなたの身元は匿名化されます：" : "신원은 익명으로 보호됩니다:",
+    user: community === "japan" ? "ユーザー" : "사용자",
+    cancel: community === "japan" ? "キャンセル" : "취소",
+    publish: community === "japan" ? "公開する" : "게시하기",
+    publishing: community === "japan" ? "公開中..." : "게시 중..."
+  };
+
+  const categories = [
+    { value: "travel", label: community === "japan" ? "旅行" : "여행" },
+    { value: "health", label: community === "japan" ? "健康" : "건강" },
+    { value: "food", label: community === "japan" ? "グルメ" : "맛집" },
+    { value: "others", label: community === "japan" ? "その他" : "기타" },
+  ];
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,7 +89,7 @@ export default function CreatePost() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-2xl font-serif font-bold">New Post</h1>
+          <h1 className="text-2xl font-serif font-bold">{t.title}</h1>
         </div>
 
         <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
@@ -78,10 +101,10 @@ export default function CreatePost() {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-semibold">Title</FormLabel>
+                      <FormLabel className="text-base font-semibold">{t.labelTitle}</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="What's on your mind?" 
+                          placeholder={t.placeholderTitle} 
                           className="text-lg font-medium px-4 py-6 bg-background border-border/60 focus:border-primary/50 rounded-xl"
                           {...field} 
                         />
@@ -96,15 +119,15 @@ export default function CreatePost() {
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-semibold">Category</FormLabel>
+                      <FormLabel className="text-base font-semibold">{t.labelCategory}</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="h-12 bg-background border-border/60 rounded-xl">
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder={t.placeholderCategory} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {CATEGORIES.map((cat) => (
+                          {categories.map((cat) => (
                             <SelectItem key={cat.value} value={cat.value}>
                               {cat.label}
                             </SelectItem>
@@ -122,10 +145,10 @@ export default function CreatePost() {
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold">Content</FormLabel>
+                    <FormLabel className="text-base font-semibold">{t.labelContent}</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Share your story..." 
+                        placeholder={t.placeholderContent} 
                         className="min-h-[250px] resize-none text-base leading-relaxed px-4 py-4 bg-background border-border/60 focus:border-primary/50 rounded-xl"
                         {...field} 
                       />
@@ -137,20 +160,20 @@ export default function CreatePost() {
               
               <div className="flex items-center justify-between pt-4 border-t">
                 <p className="text-xs text-muted-foreground">
-                  Your identity will be anonymized as <span className="font-mono">User [IP]</span>
+                  {t.anonymity} <span className="font-mono">{t.user} [IP]</span>
                 </p>
                 <div className="flex gap-3">
                   <Link href="/">
-                    <Button type="button" variant="outline" className="rounded-xl px-6">Cancel</Button>
+                    <Button type="button" variant="outline" className="rounded-xl px-6">{t.cancel}</Button>
                   </Link>
                   <Button 
                     type="submit" 
                     disabled={isPending}
                     className="rounded-xl px-8 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    {isPending ? "Publishing..." : (
+                    {isPending ? t.publishing : (
                       <>
-                        Publish <Send className="ml-2 h-4 w-4" />
+                        {t.publish} <Send className="ml-2 h-4 w-4" />
                       </>
                     )}
                   </Button>

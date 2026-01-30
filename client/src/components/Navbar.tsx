@@ -47,6 +47,15 @@ export function Navbar() {
     window.location.reload(); 
   };
 
+  const t = {
+    switchTo: community === "japan" ? "Korean" : "Japanese",
+    notifications: community === "japan" ? "通知" : "알림",
+    noNotifications: community === "japan" ? "通知はありません" : "알림이 없습니다",
+    writePost: community === "japan" ? "投稿する" : "글쓰기",
+    logout: community === "japan" ? "ログアウト" : "로그아웃",
+    login: community === "japan" ? "ログイン" : "로그인"
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
@@ -66,7 +75,7 @@ export function Navbar() {
             className="rounded-full px-4 border border-border/50 hover:bg-muted"
           >
             <span className="mr-2">{community === "japan" ? "🇯🇵" : "🇰🇷"}</span>
-            <span className="hidden sm:inline">Switch to {community === "japan" ? "Korean" : "Japanese"}</span>
+            <span className="hidden sm:inline">{community === "japan" ? "Korean" : "Japanese"}へ</span>
           </Button>
 
           {isAuthenticated ? (
@@ -83,12 +92,12 @@ export function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80">
-                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t.notifications}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <div className="max-h-80 overflow-y-auto">
                     {notifications?.length === 0 ? (
                       <div className="p-4 text-center text-sm text-muted-foreground">
-                        No notifications yet
+                        {t.noNotifications}
                       </div>
                     ) : (
                       notifications?.map((notification) => (
@@ -102,7 +111,10 @@ export function Navbar() {
                         >
                           <p className="text-sm font-medium leading-none">{notification.content}</p>
                           <p className="text-xs text-muted-foreground">
-                            {notification.createdAt && formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                            {notification.createdAt && formatDistanceToNow(new Date(notification.createdAt), { 
+                              addSuffix: true,
+                              locale: community === "japan" ? ja : ko
+                            })}
                           </p>
                         </DropdownMenuItem>
                       ))
@@ -115,7 +127,7 @@ export function Navbar() {
                 <Link href="/new">
                   <Button variant="default" size="sm" className="hidden sm:flex rounded-full shadow-md shadow-primary/20">
                     <PenSquare className="mr-2 h-4 w-4" />
-                    Write Post
+                    {t.writePost}
                   </Button>
                 </Link>
               )}
@@ -141,7 +153,7 @@ export function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>{t.logout}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -150,7 +162,7 @@ export function Navbar() {
             <a href="/login">
               <Button variant="secondary" className="font-medium rounded-full">
                 <LogIn className="mr-2 h-4 w-4" />
-                Login
+                {t.login}
               </Button>
             </a>
           )}
@@ -158,4 +170,5 @@ export function Navbar() {
       </div>
     </header>
   );
+}
 }

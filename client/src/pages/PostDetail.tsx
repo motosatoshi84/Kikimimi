@@ -18,12 +18,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { api } from "@shared/routes";
 
+import { ja, ko } from "date-fns/locale";
+
 const commentSchema = api.comments.create.input;
 
 export default function PostDetail() {
   const [, params] = useRoute("/post/:id");
   const id = parseInt(params?.id || "0");
   
+  const [community] = useState<string>(() => localStorage.getItem("community") || "japan");
   const { data: post, isLoading: postLoading, error: postError } = usePost(id);
   const { data: comments, isLoading: commentsLoading } = useComments(id);
   const { mutate: createComment, isPending: isCreatingComment } = useCreateComment(id);
@@ -40,6 +43,21 @@ export default function PostDetail() {
     createComment(data, {
       onSuccess: () => form.reset()
     });
+  };
+
+  const t = {
+    back: community === "japan" ? "フィードに戻る" : "피드로 돌아가기",
+    notFound: community === "japan" ? "記事が見つかりません" : "게시글을 찾을 수 없습니다",
+    notFoundDesc: community === "japan" ? "この記事は削除されたか、存在しません。" : "이 게시글은 삭제되었거나 존재하지 않습니다.",
+    backHome: community === "japan" ? "ホームに戻る" : "홈으로 돌아가기",
+    comments: community === "japan" ? "コメント" : "댓글",
+    noComments: community === "japan" ? "まだコメントがありません。最初のコメントを投稿しましょう！" : "아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!",
+    placeholder: community === "japan" ? "匿名で考えを共有しましょう..." : "익명으로 생각을 공유하세요...",
+    postComment: community === "japan" ? "コメントを投稿" : "댓글 작성",
+    posting: community === "japan" ? "投稿中..." : "게시 중...",
+    signIn: community === "japan" ? "サインインして会話に参加" : "로그인하여 대화에 참여하기",
+    signInDesc: community === "japan" ? "コメントは匿名ですが、アカウントが必要です。" : "댓글은 익명이지만 계정이 필요합니다.",
+    loginBtn: community === "japan" ? "ログインしてコメントする" : "로그인하여 댓글 작성"
   };
 
   if (postLoading) {
@@ -62,10 +80,10 @@ export default function PostDetail() {
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
-          <h2 className="text-2xl font-bold mb-2">Post not found</h2>
-          <p className="text-muted-foreground mb-6">This post may have been deleted or doesn't exist.</p>
+          <h2 className="text-2xl font-bold mb-2">{t.notFound}</h2>
+          <p className="text-muted-foreground mb-6">{t.notFoundDesc}</p>
           <Link href="/">
-            <Button variant="outline"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Home</Button>
+            <Button variant="outline"><ArrowLeft className="mr-2 h-4 w-4" /> {t.backHome}</Button>
           </Link>
         </div>
       </div>
@@ -78,7 +96,7 @@ export default function PostDetail() {
       
       <main className="container mx-auto px-4 pt-6 max-w-3xl">
         <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors">
-          <ArrowLeft className="mr-1 h-4 w-4" /> Back to feed
+          <ArrowLeft className="mr-1 h-4 w-4" /> {t.back}
         </Link>
 
         {/* Post Content */}
@@ -93,7 +111,7 @@ export default function PostDetail() {
                 IP: ...{post.ipOctet}
               </Badge>
               <span>
-                {post.createdAt && format(new Date(post.createdAt), 'MMMM d, yyyy')}
+                {post.createdAt && format(new Date(post.createdAt), community === "japan" ? 'yyyy年M月d日' : 'yyyy년 M월 d일', { locale: community === "japan" ? ja : ko })}
               </span>
               <span className="text-xs">•</span>
               <span>
@@ -111,7 +129,7 @@ export default function PostDetail() {
         <section className="border-t pt-8">
           <h3 className="text-xl font-serif font-bold mb-6 flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            Comments <span className="text-muted-foreground text-sm font-sans font-normal ml-2">({comments?.length || 0})</span>
+            {t.comments} <span className="text-muted-foreground text-sm font-sans font-normal ml-2">({comments?.length || 0})</span>
           </h3>
 
           {/* Comments List */}
@@ -127,7 +145,7 @@ export default function PostDetail() {
                 </div>
               ))
             ) : comments?.length === 0 ? (
-              <p className="text-muted-foreground italic text-center py-8">No comments yet. Be the first to say something!</p>
+              <p className="text-muted-foreground italic text-center py-8">{t.noComments}</p>
             ) : (
               comments?.map((comment) => (
                 <div key={comment.id} className="group flex gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300 mb-6 last:mb-0">
@@ -139,10 +157,13 @@ export default function PostDetail() {
                   <div className="flex-1 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-sm font-semibold text-foreground/80">User {comment.ipOctet}</span>
+                        <span className="text-sm font-semibold text-foreground/80">{community === "japan" ? "ユーザー" : "사용자"} {comment.ipOctet}</span>
                       </div>
                       <span className="text-xs text-muted-foreground">
-                        {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
+                        {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), { 
+                          addSuffix: true,
+                          locale: community === "japan" ? ja : ko
+                        })}
                       </span>
                     </div>
                     <div className="bg-muted/20 p-3 sm:p-4 rounded-xl rounded-tl-none border border-border/30 text-sm sm:text-base leading-relaxed text-foreground/90">
@@ -166,7 +187,7 @@ export default function PostDetail() {
                       <FormItem className="space-y-0">
                         <FormControl>
                           <Textarea 
-                            placeholder="Share your thoughts anonymously..." 
+                            placeholder={t.placeholder} 
                             className="min-h-[100px] resize-none bg-background border-border/60 focus:border-primary/50 text-base"
                             {...field} 
                           />
@@ -181,9 +202,9 @@ export default function PostDetail() {
                       disabled={isCreatingComment || !form.formState.isDirty}
                       className="rounded-full px-6 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
                     >
-                      {isCreatingComment ? "Posting..." : (
+                      {isCreatingComment ? t.posting : (
                         <>
-                          Post Comment <SendHorizontal className="ml-2 h-4 w-4" />
+                          {t.postComment} <SendHorizontal className="ml-2 h-4 w-4" />
                         </>
                       )}
                     </Button>
@@ -194,11 +215,11 @@ export default function PostDetail() {
               <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
                 <Lock className="h-8 w-8 text-muted-foreground/50" />
                 <div>
-                  <p className="font-medium text-foreground">Sign in to join the conversation</p>
-                  <p className="text-sm text-muted-foreground mt-1">Comments are anonymous but require an account.</p>
+                  <p className="font-medium text-foreground">{t.signIn}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t.signInDesc}</p>
                 </div>
                 <Link href="/api/login">
-                  <Button variant="outline" className="rounded-full">Log In to Comment</Button>
+                  <Button variant="outline" className="rounded-full">{t.loginBtn}</Button>
                 </Link>
               </div>
             )}

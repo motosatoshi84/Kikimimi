@@ -11,18 +11,20 @@ import { useState } from "react";
 import jpLogo from "@assets/kikimimi_1769648273469.png";
 import krLogo from "@assets/kikimimi_Korean_1769648273468.png";
 
-const CATEGORIES = [
-  { value: "all", label: "All Categories" },
-  { value: "travel", label: "Travel" },
-  { value: "health", label: "Health" },
-  { value: "food", label: "Food" },
-  { value: "others", label: "Others" },
+const CATEGORIES = (community: string) => [
+  { value: "all", label: community === "japan" ? "全カテゴリー" : "전체 카테고리" },
+  { value: "travel", label: community === "japan" ? "旅行" : "여행" },
+  { value: "health", label: community === "japan" ? "健康" : "건강" },
+  { value: "food", label: community === "japan" ? "グルメ" : "맛집" },
+  { value: "others", label: community === "japan" ? "その他" : "기타" },
 ];
 
 export default function Home() {
   const [community] = useState<string>(() => localStorage.getItem("community") || "japan");
   const [category, setCategory] = useState<string>("all");
   const { data: posts, isLoading, isError } = usePosts(community, category === "all" ? undefined : category);
+
+  const categories = CATEGORIES(community);
 
   return (
     <div className="min-h-screen bg-background pb-20 sm:pb-10">
@@ -164,10 +166,10 @@ export default function Home() {
             <Filter className="w-4 h-4 text-muted-foreground" />
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger className="w-[180px] bg-card border-border/50 rounded-xl">
-                <SelectValue placeholder="Category" />
+                <SelectValue placeholder={community === "japan" ? "カテゴリー" : "카테고리"} />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <SelectItem key={cat.value} value={cat.value}>
                     {cat.label}
                   </SelectItem>
@@ -193,10 +195,10 @@ export default function Home() {
           </div>
         ) : isError ? (
           <div className="text-center py-20 bg-muted/30 rounded-2xl border border-dashed">
-            <h3 className="text-lg font-semibold mb-2">Failed to load posts</h3>
-            <p className="text-muted-foreground mb-6">Something went wrong while fetching the community feed.</p>
+            <h3 className="text-lg font-semibold mb-2">{community === "japan" ? "読み込みに失敗しました" : "로딩에 실패했습니다"}</h3>
+            <p className="text-muted-foreground mb-6">{community === "japan" ? "コミュニティフィードの取得中にエラーが発生しました。" : "커뮤니티 피드를 불러오는 중에 오류가 발생했습니다."}</p>
             <Button onClick={() => window.location.reload()} variant="outline">
-              Try Again
+              {community === "japan" ? "再試行" : "다시 시도"}
             </Button>
           </div>
         ) : posts?.length === 0 ? (
@@ -204,10 +206,10 @@ export default function Home() {
             <div className="bg-primary/5 p-4 rounded-full w-fit mx-auto mb-4">
               <PenSquare className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-            <p className="text-muted-foreground mb-6">Be the first to share something with the community.</p>
+            <h3 className="text-lg font-semibold mb-2">{community === "japan" ? "投稿がありません" : "작성된 게시글이 없습니다"}</h3>
+            <p className="text-muted-foreground mb-6">{community === "japan" ? "最初の投稿をしてみましょう。" : "첫 번째 게시글을 작성해 보세요."}</p>
             <Link href="/new">
-              <Button>Create Post</Button>
+              <Button>{community === "japan" ? "投稿を作成" : "게시글 작성"}</Button>
             </Link>
           </div>
         ) : (

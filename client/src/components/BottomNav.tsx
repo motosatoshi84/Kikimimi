@@ -6,6 +6,13 @@ import { cn } from "@/lib/utils";
 export function BottomNav() {
   const [location] = useLocation();
   const { isAuthenticated } = useAuth();
+  const community = localStorage.getItem("community") || "japan";
+
+  const t = {
+    home: community === "japan" ? "ホーム" : "홈",
+    login: community === "japan" ? "ログイン" : "로그인",
+    logout: community === "japan" ? "ログアウト" : "로그아웃"
+  };
 
   // Only show on mobile
   return (
@@ -17,7 +24,7 @@ export function BottomNav() {
             location === "/" ? "text-primary" : "text-muted-foreground hover:text-foreground"
           )}>
             <Home className="h-6 w-6" />
-            <span className="text-[10px] font-medium">Home</span>
+            <span className="text-[10px] font-medium">{t.home}</span>
           </div>
         </Link>
         
@@ -38,7 +45,7 @@ export function BottomNav() {
              "text-muted-foreground hover:text-foreground"
           )}>
             <User className="h-6 w-6" />
-            <span className="text-[10px] font-medium">{isAuthenticated ? "Logout" : "Login"}</span>
+            <span className="text-[10px] font-medium">{isAuthenticated ? t.logout : t.login}</span>
           </div>
         </Link>
       </nav>

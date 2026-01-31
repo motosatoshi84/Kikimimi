@@ -92,7 +92,7 @@ export function Navbar() {
                     )}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80 bg-popover opacity-100">
+                <DropdownMenuContent align="end" className="w-80 bg-background/95 backdrop-blur-md border shadow-xl">
                   <DropdownMenuLabel>{t.notifications}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <div className="max-h-80 overflow-y-auto">
@@ -142,7 +142,7 @@ export function Navbar() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-popover opacity-100" align="end" forceMount>
+                <DropdownMenuContent className="w-56 bg-background/95 backdrop-blur-md border shadow-xl" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>

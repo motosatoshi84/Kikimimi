@@ -18,8 +18,6 @@ const CATEGORIES = (community: string) => [
   { value: "food", label: community === "japan" ? "グルメ" : "맛집" },
   { value: "lifestyle", label: community === "japan" ? "ライフスタイル" : "라이프스타일" },
   { value: "tech", label: community === "japan" ? "IT・テック" : "테크" },
-  { value: "jobs", label: community === "japan" ? "仕事・求人" : "구인구직" },
-  { value: "marketplace", label: community === "japan" ? "売買・フリマ" : "중고장터" },
   { value: "others", label: community === "japan" ? "その他" : "기타" },
 ];
 
@@ -161,8 +159,8 @@ export default function Home() {
             </h1>
             <p className="text-muted-foreground text-lg">
               {community === "japan" 
-                ? "匿名で現地の日本人と情報を共有しましょう。"
-                : "익명으로 현지 한국인들과 정보를 공유하세요."}
+                ? "匿名でアメリカに滞在している日本人が情報を共有できるところ。"
+                : "미국에 거주하는 한국인들이 익명으로 정보를 공유할 수 있는 공간입니다."}
             </p>
           </div>
 

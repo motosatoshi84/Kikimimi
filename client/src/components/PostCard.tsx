@@ -25,6 +25,10 @@ export function PostCard({ post }: PostCardProps) {
         case "travel": return "旅行";
         case "health": return "健康";
         case "food": return "グルメ";
+        case "lifestyle": return "ライフスタイル";
+        case "tech": return "IT・テック";
+        case "jobs": return "仕事・求人";
+        case "marketplace": return "売買・フリマ";
         default: return "その他";
       }
     } else {
@@ -32,6 +36,10 @@ export function PostCard({ post }: PostCardProps) {
         case "travel": return "여행";
         case "health": return "건강";
         case "food": return "맛집";
+        case "lifestyle": return "라이프스타일";
+        case "tech": return "테크";
+        case "jobs": return "구인구직";
+        case "marketplace": return "중고장터";
         default: return "기타";
       }
     }

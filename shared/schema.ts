@@ -75,7 +75,7 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 
 // Schemas
 export const insertPostSchema = createInsertSchema(posts).extend({
-  category: z.enum(["travel", "health", "food", "others"]),
+  category: z.enum(["travel", "health", "food", "lifestyle", "tech", "jobs", "marketplace", "others"]),
   community: z.enum(["japan", "korea"]),
 }).omit({ 
   id: true, 

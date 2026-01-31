@@ -16,6 +16,10 @@ const CATEGORIES = (community: string) => [
   { value: "travel", label: community === "japan" ? "旅行" : "여행" },
   { value: "health", label: community === "japan" ? "健康" : "건강" },
   { value: "food", label: community === "japan" ? "グルメ" : "맛집" },
+  { value: "lifestyle", label: community === "japan" ? "ライフスタイル" : "라이프스타일" },
+  { value: "tech", label: community === "japan" ? "IT・テック" : "테크" },
+  { value: "jobs", label: community === "japan" ? "仕事・求人" : "구인구직" },
+  { value: "marketplace", label: community === "japan" ? "売買・フリマ" : "중고장터" },
   { value: "others", label: community === "japan" ? "その他" : "기타" },
 ];
 

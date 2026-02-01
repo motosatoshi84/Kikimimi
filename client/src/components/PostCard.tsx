@@ -51,6 +51,7 @@ export function PostCard({ post }: PostCardProps) {
         <CardHeader className="pb-3">
           <div className="flex justify-between items-start gap-4">
             <CardTitle className="font-serif text-lg leading-snug line-clamp-2 text-balance">
+              {post.isClosed && <span className="text-destructive mr-2">[CLOSED]</span>}
               {post.title}
             </CardTitle>
             <Badge variant="outline" className="capitalize shrink-0">

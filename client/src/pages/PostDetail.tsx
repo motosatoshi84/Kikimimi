@@ -57,8 +57,12 @@ export default function PostDetail() {
     posting: community === "japan" ? "投稿中..." : "게시 중...",
     signIn: community === "japan" ? "サインインして会話に参加" : "로그인하여 대화에 참여하기",
     signInDesc: community === "japan" ? "コメントは匿名ですが、アカウントが必要です。" : "댓글은 익명이지만 계정이 필요합니다.",
-    loginBtn: community === "japan" ? "ログインしてコメントする" : "로그인하여 댓글 작성"
+    loginBtn: community === "japan" ? "ログインしてコメントする" : "로그인하여 댓글 작성",
+    closed: community === "japan" ? "この投稿は30日間返信がないため終了しました。" : "이 게시물은 30일 동안 답글이 없어 종료되었습니다.",
+    archived: community === "japan" ? "アーカイブ済み（返信で再開）" : "보관됨 (답글 작성 시 재활성화)"
   };
+
+  const isArchived = post && post.lastActivityAt && (new Date().getTime() - new Date(post.lastActivityAt).getTime() > 90 * 24 * 60 * 60 * 1000);
 
   if (postLoading) {
     return (
@@ -107,6 +111,16 @@ export default function PostDetail() {
             </h1>
             
             <div className="flex items-center gap-4 text-sm text-muted-foreground border-b border-border/50 pb-6">
+              {post.isClosed && (
+                <Badge variant="destructive" className="font-sans">
+                  {t.closed}
+                </Badge>
+              )}
+              {isArchived && !post.isClosed && (
+                <Badge variant="secondary" className="font-sans">
+                  {t.archived}
+                </Badge>
+              )}
               <Badge variant="outline" className="font-mono bg-muted/50">
                 IP: ...{post.ipOctet}
               </Badge>
@@ -177,7 +191,12 @@ export default function PostDetail() {
 
           {/* Comment Form */}
           <div className="mt-10 bg-muted/30 p-4 sm:p-6 rounded-2xl border border-border/50">
-            {isAuthenticated ? (
+            {post.isClosed ? (
+              <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                <Lock className="h-8 w-8 text-muted-foreground/50" />
+                <p className="font-medium text-foreground">{t.closed}</p>
+              </div>
+            ) : isAuthenticated ? (
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField

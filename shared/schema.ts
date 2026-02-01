@@ -15,6 +15,8 @@ export const posts = pgTable("posts", {
   community: text("community").notNull().default("japan"),
   authorId: varchar("author_id").notNull(), // Links to auth users
   ipOctet: varchar("ip_octet").notNull(), // Last 2 octets of IP
+  isClosed: boolean("is_closed").notNull().default(false),
+  lastActivityAt: timestamp("last_activity_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

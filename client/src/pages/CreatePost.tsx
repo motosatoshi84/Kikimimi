@@ -130,7 +130,7 @@ export default function CreatePost() {
                             <SelectValue placeholder={t.placeholderCategory} />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="bg-background/95 backdrop-blur-md border shadow-xl opacity-100">
                           {categories.map((cat) => (
                             <SelectItem key={cat.value} value={cat.value}>
                               {cat.label}

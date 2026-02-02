@@ -69,15 +69,30 @@ export function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-2 sm:gap-4">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={toggleCommunity}
-            className="rounded-full px-4 border border-border/50 hover:bg-muted"
-          >
-            <span className="mr-2">{community === "japan" ? "🇯🇵" : "🇰🇷"}</span>
-            <span className="hidden sm:inline">{community === "japan" ? "Korean" : "Japanese"}へ</span>
-          </Button>
+          <div className="flex items-center bg-muted rounded-full p-1 border border-border/50">
+            <button
+              onClick={() => community !== "japan" && toggleCommunity()}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 ${
+                community === "japan" 
+                  ? "bg-background text-foreground shadow-sm scale-105" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span className="text-sm">🇯🇵</span>
+              <span className="text-xs font-medium hidden sm:inline">JP</span>
+            </button>
+            <button
+              onClick={() => community !== "korea" && toggleCommunity()}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 ${
+                community === "korea" 
+                  ? "bg-background text-foreground shadow-sm scale-105" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span className="text-sm">🇰🇷</span>
+              <span className="text-xs font-medium hidden sm:inline">KR</span>
+            </button>
+          </div>
 
           {isAuthenticated ? (
             <>

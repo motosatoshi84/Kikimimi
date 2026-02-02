@@ -62,6 +62,10 @@ export default function Home() {
                       <p className="pl-5 text-sm">誹謗中傷、嫌がらせ、ヘイトスピーチ、個人攻撃は禁止です。</p>
                     </li>
                     <li>
+                      <span className="font-bold text-foreground">コンテンツのライフサイクル</span>
+                      <p className="pl-5 text-sm">30日間返信がない投稿は自動的に「終了」となり、返信ができなくなります。90日間活動がない投稿はアーカイブされますが、返信することで再開できます。120日間活動がない投稿は自動的に削除されます。</p>
+                    </li>
+                    <li>
                       <span className="font-bold text-foreground">個人情報を投稿しないでください</span>
                       <p className="pl-5 text-sm">本名、住所、電話番号、勤務先など、自分や他人を特定できる情報は投稿しないでください。</p>
                     </li>
@@ -116,6 +120,10 @@ export default function Home() {
                     <li>
                       <span className="font-bold text-foreground">서로 존중해 주세요</span>
                       <p className="pl-5 text-sm">괴롭힘, 따돌림, 혐오 발언, 인신공격은 허용되지 않습니다.</p>
+                    </li>
+                    <li>
+                      <span className="font-bold text-foreground">콘텐츠 관리 정책</span>
+                      <p className="pl-5 text-sm">30일 동안 답글이 없는 게시물은 자동으로 '종료'되어 답글 작성이 제한됩니다. 90일 동안 활동이 없는 게시물은 보관되지만, 답글을 작성하면 다시 활성화됩니다. 120일 동안 활동이 없는 게시물은 자동으로 삭제됩니다.</p>
                     </li>
                     <li>
                       <span className="font-bold text-foreground">개인정보를 게시하지 마세요</span>

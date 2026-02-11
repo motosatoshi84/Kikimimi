@@ -98,152 +98,170 @@ export default function PostDetail() {
     <div className="min-h-screen bg-background pb-24 sm:pb-12">
       <Navbar />
       
-      <main className="container mx-auto px-4 pt-6 max-w-3xl">
-        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors">
-          <ArrowLeft className="mr-1 h-4 w-4" /> {t.back}
-        </Link>
+      <main className="container mx-auto px-4 pt-6 max-w-5xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+            <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors">
+              <ArrowLeft className="mr-1 h-4 w-4" /> {t.back}
+            </Link>
 
-        {/* Post Content */}
-        <article className="mb-12 sticky top-0 bg-background z-10 pt-4 pb-4 animate-in fade-in slide-in-from-bottom-4 duration-500 border-b shadow-sm">
-          <header className="mb-6 space-y-4">
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground leading-tight text-balance">
-              {post.title}
-            </h1>
-            
-            <div className="flex items-center gap-4 text-sm text-muted-foreground border-b border-border/50 pb-6">
-              {post.isClosed && (
-                <Badge variant="destructive" className="font-sans">
-                  {t.closed}
-                </Badge>
-              )}
-              {isArchived && !post.isClosed && (
-                <Badge variant="secondary" className="font-sans">
-                  {t.archived}
-                </Badge>
-              )}
-              <Badge variant="outline" className="font-mono bg-muted/50">
-                IP: ...{post.ipOctet}
-              </Badge>
-              <span>
-                {post.createdAt && format(new Date(post.createdAt), community === "japan" ? 'yyyy年M月d日' : 'yyyy년 M월 d일', { locale: community === "japan" ? ja : ko })}
-              </span>
-              <span className="text-xs">•</span>
-              <span>
-                {post.createdAt && format(new Date(post.createdAt), 'h:mm a')}
-              </span>
-            </div>
-          </header>
-
-          <div className="prose prose-stone dark:prose-invert max-w-none text-lg leading-relaxed text-foreground/90 font-sans whitespace-pre-wrap">
-            {post.content}
-          </div>
-        </article>
-
-        {/* Comments Section */}
-        <section className="border-t pt-8">
-          <h3 className="text-xl font-serif font-bold mb-6 flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
-            {t.comments} <span className="text-muted-foreground text-sm font-sans font-normal ml-2">({comments?.length || 0})</span>
-          </h3>
-
-          {/* Comments List */}
-          <div className="space-y-6 flex flex-col">
-            {commentsLoading ? (
-              Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex gap-4 mb-6">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-4 w-1/4" />
-                    <Skeleton className="h-16 w-full" />
-                  </div>
+            {/* Post Content */}
+            <article className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <header className="mb-6 space-y-4">
+                <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground leading-tight text-balance">
+                  {post.title}
+                </h1>
+                
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground border-b border-border/50 pb-6">
+                  {post.isClosed && (
+                    <Badge variant="destructive" className="font-sans">
+                      {t.closed}
+                    </Badge>
+                  )}
+                  {isArchived && !post.isClosed && (
+                    <Badge variant="secondary" className="font-sans">
+                      {t.archived}
+                    </Badge>
+                  )}
+                  <Badge variant="outline" className="font-mono bg-muted/50">
+                    IP: ...{post.ipOctet}
+                  </Badge>
+                  <span className="whitespace-nowrap">
+                    {post.createdAt && format(new Date(post.createdAt), community === "japan" ? 'yyyy年M月d日' : 'yyyy년 M월 d일', { locale: community === "japan" ? ja : ko })}
+                  </span>
+                  <span className="text-xs hidden sm:inline">•</span>
+                  <span className="whitespace-nowrap">
+                    {post.createdAt && format(new Date(post.createdAt), 'h:mm a')}
+                  </span>
                 </div>
-              ))
-            ) : comments?.length === 0 ? (
-              <p className="text-muted-foreground italic text-center py-8">{t.noComments}</p>
-            ) : (
-              comments?.map((comment) => (
-                <div key={comment.id} className="group flex gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300 mb-6 last:mb-0">
-                   <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border border-border/50 bg-muted">
-                    <AvatarFallback className="text-[10px] sm:text-xs font-mono text-muted-foreground">
-                      {comment.ipOctet}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-sm font-semibold text-foreground/80">{community === "japan" ? "ユーザー" : "사용자"} {comment.ipOctet}</span>
+              </header>
+
+              <div className="prose prose-stone dark:prose-invert max-w-none text-lg leading-relaxed text-foreground/90 font-sans whitespace-pre-wrap">
+                {post.content}
+              </div>
+            </article>
+
+            {/* Comments Section */}
+            <section className="border-t pt-8">
+              <h3 className="text-xl font-serif font-bold mb-6 flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                {t.comments} <span className="text-muted-foreground text-sm font-sans font-normal ml-2">({comments?.length || 0})</span>
+              </h3>
+
+              {/* Comments List */}
+              <div className="space-y-6 flex flex-col mb-12">
+                {commentsLoading ? (
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="flex gap-4 mb-6">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="space-y-2 flex-1">
+                        <Skeleton className="h-4 w-1/4" />
+                        <Skeleton className="h-16 w-full" />
                       </div>
-                      <span className="text-xs text-muted-foreground">
-                        {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), { 
-                          addSuffix: true,
-                          locale: community === "japan" ? ja : ko
-                        })}
-                      </span>
                     </div>
-                    <div className="bg-muted/20 p-3 sm:p-4 rounded-xl rounded-tl-none border border-border/30 text-sm sm:text-base leading-relaxed text-foreground/90">
-                      {comment.content}
+                  ))
+                ) : comments?.length === 0 ? (
+                  <p className="text-muted-foreground italic text-center py-8">{t.noComments}</p>
+                ) : (
+                  comments?.map((comment) => (
+                    <div key={comment.id} className="group flex gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                       <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border border-border/50 bg-muted">
+                        <AvatarFallback className="text-[10px] sm:text-xs font-mono text-muted-foreground">
+                          {comment.ipOctet}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-sm font-semibold text-foreground/80">{community === "japan" ? "ユーザー" : "사용자"} {comment.ipOctet}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), { 
+                              addSuffix: true,
+                              locale: community === "japan" ? ja : ko
+                            })}
+                          </span>
+                        </div>
+                        <div className="bg-muted/20 p-3 sm:p-4 rounded-xl rounded-tl-none border border-border/30 text-sm sm:text-base leading-relaxed text-foreground/90">
+                          {comment.content}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))
-            )}
+                  ))
+                )}
+              </div>
+            </section>
           </div>
 
-          {/* Comment Form */}
-          <div className="mt-10 bg-muted/30 p-4 sm:p-6 rounded-2xl border border-border/50">
-            {post.isClosed ? (
-              <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
-                <Lock className="h-8 w-8 text-muted-foreground/50" />
-                <p className="font-medium text-foreground">{t.closed}</p>
-              </div>
-            ) : isAuthenticated ? (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem className="space-y-0">
-                        <FormControl>
-                          <Textarea 
-                            placeholder={t.placeholder} 
-                            className="min-h-[100px] resize-none bg-background border-border/60 focus:border-primary/50 text-base"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex justify-end">
-                    <Button 
-                      type="submit" 
-                      disabled={isCreatingComment || !form.formState.isDirty}
-                      className="rounded-full px-6 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
-                    >
-                      {isCreatingComment ? t.posting : (
-                        <>
-                          {t.postComment} <SendHorizontal className="ml-2 h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
+          <aside className="lg:col-span-4">
+            <div className="sticky top-28 space-y-6">
+              {/* Comment Form in Sidebar for Desktop */}
+              <div className="bg-muted/30 p-6 rounded-2xl border border-border/50 shadow-sm">
+                <h4 className="font-bold mb-4">{t.postComment}</h4>
+                {post.isClosed ? (
+                  <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                    <Lock className="h-8 w-8 text-muted-foreground/50" />
+                    <p className="font-medium text-foreground">{t.closed}</p>
                   </div>
-                </form>
-              </Form>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
-                <Lock className="h-8 w-8 text-muted-foreground/50" />
-                <div>
-                  <p className="font-medium text-foreground">{t.signIn}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{t.signInDesc}</p>
-                </div>
-                <Link href="/api/login">
-                  <Button variant="outline" className="rounded-full">{t.loginBtn}</Button>
-                </Link>
+                ) : isAuthenticated ? (
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="content"
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormControl>
+                              <Textarea 
+                                placeholder={t.placeholder} 
+                                className="min-h-[120px] resize-none bg-background border-border/60 focus:border-primary/50 text-base rounded-xl"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button 
+                        type="submit" 
+                        disabled={isCreatingComment || !form.formState.isDirty}
+                        className="w-full rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
+                      >
+                        {isCreatingComment ? t.posting : (
+                          <>
+                            {t.postComment} <SendHorizontal className="ml-2 h-4 w-4" />
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                    <Lock className="h-6 w-6 text-muted-foreground/50" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{t.signIn}</p>
+                    </div>
+                    <Link href="/api/login">
+                      <Button variant="outline" className="w-full rounded-full text-xs">{t.loginBtn}</Button>
+                    </Link>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </section>
+
+              {/* Safety/Info Card */}
+              <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
+                <h4 className="text-sm font-bold text-primary mb-2">
+                  {community === "japan" ? "匿名性と安全性" : "익명성과 안전"}
+                </h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {community === "japan" 
+                    ? "すべての投稿とコメントは匿名です。IPアドレスの一部が表示され、コミュニティの信頼性を維持します。"
+                    : "모든 게시글과 댓글은 익명입니다. IP 주소의 일부가 표시되어 커뮤니티의 신뢰성을 유지합니다."}
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
       </main>
       
       <BottomNav />

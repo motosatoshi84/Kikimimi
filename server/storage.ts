@@ -9,11 +9,54 @@ export interface IStorage extends IAuthStorage {
   createPost(post: InsertPost, authorId: string, ipOctet: string): Promise<Post>;
   getComments(postId: number): Promise<Comment[]>;
   createComment(postId: number, comment: InsertComment, authorId: string, ipOctet: string): Promise<Comment>;
-  getNotifications(userId: string): Promise<Notification[]>;
-  markNotificationRead(notificationId: number): Promise<void>;
+  updatePost(id: number, authorId: string, data: Partial<InsertPost>): Promise<Post>;
+  deletePost(id: number, authorId: string): Promise<void>;
+  updateComment(id: number, authorId: string, data: Partial<InsertComment>): Promise<Comment>;
+  deleteComment(id: number, authorId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
+  // ... existing methods ...
+
+  async updatePost(id: number, authorId: string, data: Partial<InsertPost>): Promise<Post> {
+    const [updatedPost] = await db
+      .update(posts)
+      .set({ ...data, lastActivityAt: new Date() })
+      .where(and(eq(posts.id, id), eq(posts.authorId, authorId)))
+      .returning();
+    
+    if (!updatedPost) throw new Error("Post not found or unauthorized");
+    return updatedPost;
+  }
+
+  async deletePost(id: number, authorId: string): Promise<void> {
+    // Delete all comments first
+    await db.delete(comments).where(eq(comments.postId, id));
+    // Delete the post
+    const result = await db
+      .delete(posts)
+      .where(and(eq(posts.id, id), eq(posts.authorId, authorId)));
+    
+    // Notifications cleanup would be good here too
+    await db.delete(notifications).where(eq(notifications.postId, id));
+  }
+
+  async updateComment(id: number, authorId: string, data: Partial<InsertComment>): Promise<Comment> {
+    const [updatedComment] = await db
+      .update(comments)
+      .set(data)
+      .where(and(eq(comments.id, id), eq(comments.authorId, authorId)))
+      .returning();
+    
+    if (!updatedComment) throw new Error("Comment not found or unauthorized");
+    return updatedComment;
+  }
+
+  async deleteComment(id: number, authorId: string): Promise<void> {
+    await db
+      .delete(comments)
+      .where(and(eq(comments.id, id), eq(comments.authorId, authorId)));
+  }
   // Inherit auth storage methods
   getUser = authStorage.getUser.bind(authStorage);
   upsertUser = authStorage.upsertUser.bind(authStorage);

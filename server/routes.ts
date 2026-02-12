@@ -131,6 +131,52 @@ export async function registerRoutes(
     }
   });
 
+  app.patch(api.posts.get.path, isAuthenticated, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const userId = req.user.claims.sub;
+      const input = api.posts.create.input.partial().parse(req.body);
+      const post = await storage.updatePost(id, userId, input);
+      res.json(post);
+    } catch (err) {
+      res.status(403).json({ message: err instanceof Error ? err.message : "Unauthorized" });
+    }
+  });
+
+  app.delete(api.posts.get.path, isAuthenticated, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const userId = req.user.claims.sub;
+      await storage.deletePost(id, userId);
+      res.status(204).end();
+    } catch (err) {
+      res.status(403).json({ message: err instanceof Error ? err.message : "Unauthorized" });
+    }
+  });
+
+  app.patch("/api/comments/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const userId = req.user.claims.sub;
+      const input = api.comments.create.input.parse(req.body);
+      const comment = await storage.updateComment(id, userId, input);
+      res.json(comment);
+    } catch (err) {
+      res.status(403).json({ message: err instanceof Error ? err.message : "Unauthorized" });
+    }
+  });
+
+  app.delete("/api/comments/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const userId = req.user.claims.sub;
+      await storage.deleteComment(id, userId);
+      res.status(204).end();
+    } catch (err) {
+      res.status(403).json({ message: err instanceof Error ? err.message : "Unauthorized" });
+    }
+  });
+
   // Notifications
   app.get(api.notifications.list.path, isAuthenticated, async (req: any, res) => {
     const userId = req.user.claims.sub;

@@ -1,5 +1,5 @@
 import { useRoute } from "wouter";
-import { usePost, useComments, useCreateComment } from "@/hooks/use-posts";
+import { usePost, useComments, useCreateComment, useUpdatePost, useDeletePost, useUpdateComment, useDeleteComment } from "@/hooks/use-posts";
 import { useAuth } from "@/hooks/use-auth";
 import { Navbar } from "@/components/Navbar";
 import { BottomNav } from "@/components/BottomNav";
@@ -9,14 +9,25 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatDistanceToNow, format } from "date-fns";
-import { ArrowLeft, SendHorizontal, Lock, MessageSquare } from "lucide-react";
-import { Link } from "wouter";
+import { ArrowLeft, SendHorizontal, Lock, MessageSquare, Edit2, Trash2, X, Check } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { api } from "@shared/routes";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { ja, ko } from "date-fns/locale";
 
@@ -26,11 +37,20 @@ export default function PostDetail() {
   const [, params] = useRoute("/post/:id");
   const id = parseInt(params?.id || "0");
   
+  const [, setLocation] = useLocation();
   const [community] = useState<string>(() => localStorage.getItem("community") || "japan");
   const { data: post, isLoading: postLoading, error: postError } = usePost(id);
   const { data: comments, isLoading: commentsLoading } = useComments(id);
   const { mutate: createComment, isPending: isCreatingComment } = useCreateComment(id);
-  const { isAuthenticated } = useAuth();
+  const { mutate: updatePost } = useUpdatePost();
+  const { mutate: deletePost } = useDeletePost();
+  const { mutate: updateComment } = useUpdateComment(id);
+  const { mutate: deleteComment } = useDeleteComment(id);
+  const { user, isAuthenticated } = useAuth();
+
+  const [editingPost, setEditingPost] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState("");
 
   const form = useForm<z.infer<typeof commentSchema>>({
     resolver: zodResolver(commentSchema),
@@ -59,7 +79,13 @@ export default function PostDetail() {
     signInDesc: community === "japan" ? "コメントは匿名ですが、アカウントが必要です。" : "댓글은 익명이지만 계정이 필요합니다.",
     loginBtn: community === "japan" ? "ログインしてコメントする" : "로그인하여 댓글 작성",
     closed: community === "japan" ? "この投稿は30日間返信がないため終了しました。" : "이 게시물은 30일 동안 답글이 없어 종료되었습니다.",
-    archived: community === "japan" ? "アーカイブ済み（返信で再開）" : "보관됨 (답글 작성 시 재활성화)"
+    archived: community === "japan" ? "アーカイブ済み（返信で再開）" : "보관됨 (답글 작성 시 재활성화)",
+    edit: community === "japan" ? "編集" : "수정",
+    delete: community === "japan" ? "削除" : "삭제",
+    deleteConfirm: community === "japan" ? "本当に削除しますか？" : "정말 삭제하시겠습니까?",
+    deletePostDesc: community === "japan" ? "この投稿とすべてのコメントが完全に削除されます。" : "이 게시글과 모든 댓글이 영구적으로 삭제됩니다.",
+    save: community === "japan" ? "保存" : "저장",
+    cancel: community === "japan" ? "キャンセル" : "취소"
   };
 
   const isArchived = post && post.lastActivityAt && (new Date().getTime() - new Date(post.lastActivityAt).getTime() > 90 * 24 * 60 * 60 * 1000);
@@ -108,9 +134,50 @@ export default function PostDetail() {
             {/* Post Content */}
             <article className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <header className="mb-6 space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground leading-tight text-balance">
-                  {post.title}
-                </h1>
+                <div className="flex justify-between items-start gap-4">
+                  <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground leading-tight text-balance flex-1">
+                    {post.title}
+                  </h1>
+                  
+                  {isAuthenticated && user?.id === post.authorId && (
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8 rounded-full"
+                        onClick={() => {
+                          setEditingPost(true);
+                          setEditValue(post.content);
+                        }}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-destructive hover:text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-background/95 backdrop-blur-md">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t.deleteConfirm}</AlertDialogTitle>
+                            <AlertDialogDescription>{t.deletePostDesc}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="rounded-xl">{t.cancel}</AlertDialogCancel>
+                            <AlertDialogAction 
+                              className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              onClick={() => deletePost(post.id, { onSuccess: () => setLocation("/") })}
+                            >
+                              {t.delete}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  )}
+                </div>
                 
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground border-b border-border/50 pb-6">
                   {post.isClosed && (
@@ -137,7 +204,29 @@ export default function PostDetail() {
               </header>
 
               <div className="prose prose-stone dark:prose-invert max-w-none text-lg leading-relaxed text-foreground/90 font-sans whitespace-pre-wrap">
-                {post.content}
+                {editingPost ? (
+                  <div className="space-y-4">
+                    <Textarea 
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      className="min-h-[200px] bg-background rounded-xl border-border/60"
+                    />
+                    <div className="flex gap-2 justify-end">
+                      <Button variant="outline" className="rounded-xl" onClick={() => setEditingPost(false)}>
+                        <X className="mr-2 h-4 w-4" /> {t.cancel}
+                      </Button>
+                      <Button className="rounded-xl" onClick={() => {
+                        updatePost({ id: post.id, data: { content: editValue } }, {
+                          onSuccess: () => setEditingPost(false)
+                        });
+                      }}>
+                        <Check className="mr-2 h-4 w-4" /> {t.save}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  post.content
+                )}
               </div>
             </article>
 

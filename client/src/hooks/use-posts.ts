@@ -77,6 +77,48 @@ export function useCreatePost() {
   });
 }
 
+export function useUpdatePost() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const res = await fetch(buildUrl(api.posts.get.path, { id }), {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to update post");
+      return await res.json();
+    },
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: [api.posts.list.path] });
+      queryClient.invalidateQueries({ queryKey: [api.posts.get.path, id] });
+      toast({ title: "Updated", description: "Your post has been updated." });
+    },
+  });
+}
+
+export function useDeletePost() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(buildUrl(api.posts.get.path, { id }), {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to delete post");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.posts.list.path] });
+      toast({ title: "Deleted", description: "Your post and all its comments have been deleted." });
+    },
+  });
+}
+
 // ============================================
 // COMMENTS HOOKS
 // ============================================
@@ -136,6 +178,47 @@ export function useCreateComment(postId: number) {
         description: error.message,
         variant: "destructive",
       });
+    },
+  });
+}
+
+export function useUpdateComment(postId: number) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const res = await fetch(`/api/comments/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to update comment");
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.comments.list.path, postId] });
+      toast({ title: "Updated", description: "Your comment has been updated." });
+    },
+  });
+}
+
+export function useDeleteComment(postId: number) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`/api/comments/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to delete comment");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.comments.list.path, postId] });
+      toast({ title: "Deleted", description: "Your comment has been deleted." });
     },
   });
 }

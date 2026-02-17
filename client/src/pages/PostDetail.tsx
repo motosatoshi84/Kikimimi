@@ -287,43 +287,77 @@ export default function PostDetail() {
                           {comment.ipOctet}
                         </AvatarFallback>
                       </Avatar>
-                  <div className="flex-1 space-y-1.5">
-                      <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                        {comment.editedAt && (
-                          <span className="italic opacity-70">({community === "japan" ? "編集済み" : "수정됨"})</span>
-                        )}
-                        {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), { 
-                          addSuffix: true,
-                          locale: community === "japan" ? ja : ko
-                        })}
-                      </span>
-                    </div>
-                    <div className="bg-muted/20 p-3 sm:p-4 rounded-xl rounded-tl-none border border-border/30 text-sm sm:text-base leading-relaxed text-foreground/90">
-                      {editingCommentId === comment.id ? (
-                        <div className="space-y-3">
-                          <Textarea 
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            className="min-h-[80px] bg-background rounded-xl border-border/60"
-                          />
-                          <div className="flex gap-2 justify-end">
-                            <Button variant="ghost" size="sm" className="h-8 rounded-xl" onClick={() => setEditingCommentId(null)}>
-                              {t.cancel}
-                            </Button>
-                            <Button size="sm" className="h-8 rounded-xl" onClick={() => {
-                              updateComment({ id: comment.id, data: { content: editValue } }, {
-                                onSuccess: () => setEditingCommentId(null)
-                              });
-                            }}>
-                              {t.save}
-                            </Button>
+                      <div className="flex-1 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-sm font-semibold text-foreground/80">{community === "japan" ? "ユーザー" : "사용자"} {comment.ipOctet}</span>
+                            {isAuthenticated && user?.id === comment.authorId && (
+                              <div className="flex gap-1">
+                                <button 
+                                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                                  onClick={() => {
+                                    setEditingCommentId(comment.id);
+                                    setEditValue(comment.content);
+                                  }}
+                                >
+                                  {t.edit}
+                                </button>
+                                <span className="text-[10px] text-muted-foreground/30">•</span>
+                                <button 
+                                  className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+                                  onClick={() => {
+                                    if (window.confirm(t.deleteConfirm)) {
+                                      deleteComment(comment.id);
+                                    }
+                                  }}
+                                >
+                                  {t.delete}
+                                </button>
+                              </div>
+                            )}
                           </div>
+                          <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                            {comment.editedAt && (
+                              <span className="italic opacity-70">({community === "japan" ? "編集済み" : "수정됨"})</span>
+                            )}
+                            {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), { 
+                              addSuffix: true,
+                              locale: community === "japan" ? ja : ko
+                            })}
+                          </span>
                         </div>
-                      ) : (
-                        comment.content
-                      )}
+                        <div className="bg-muted/20 p-3 sm:p-4 rounded-xl rounded-tl-none border border-border/30 text-sm sm:text-base leading-relaxed text-foreground/90">
+                          {editingCommentId === comment.id ? (
+                            <div className="space-y-3">
+                              <Textarea 
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                className="min-h-[80px] bg-background rounded-xl border-border/60"
+                              />
+                              <div className="flex gap-2 justify-end">
+                                <Button variant="ghost" size="sm" className="h-8 rounded-xl" onClick={() => setEditingCommentId(null)}>
+                                  {t.cancel}
+                                </Button>
+                                <Button size="sm" className="h-8 rounded-xl" onClick={() => {
+                                  updateComment({ id: comment.id, data: { content: editValue } }, {
+                                    onSuccess: () => setEditingCommentId(null)
+                                  });
+                                }}>
+                                  {t.save}
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            comment.content
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))
+                )}
+              </div>
+            </section>
+          </div>
 
           <aside className="lg:col-span-4">
             <div className="sticky top-28 space-y-6">

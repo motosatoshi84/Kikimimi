@@ -200,6 +200,11 @@ export default function PostDetail() {
                   <span className="whitespace-nowrap">
                     {post.createdAt && format(new Date(post.createdAt), 'h:mm a')}
                   </span>
+                  {post.editedAt && (
+                    <span className="text-xs italic bg-muted/50 px-1.5 py-0.5 rounded">
+                      {community === "japan" ? "編集済み" : "수정됨"}
+                    </span>
+                  )}
                 </div>
               </header>
 
@@ -288,7 +293,10 @@ export default function PostDetail() {
                           </div>
                         )}
                       </div>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                        {comment.editedAt && (
+                          <span className="italic opacity-70">({community === "japan" ? "編集済み" : "수정됨"})</span>
+                        )}
                         {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), { 
                           addSuffix: true,
                           locale: community === "japan" ? ja : ko

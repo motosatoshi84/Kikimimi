@@ -21,7 +21,7 @@ export class DatabaseStorage implements IStorage {
   async updatePost(id: number, authorId: string, data: Partial<InsertPost>): Promise<Post> {
     const [updatedPost] = await db
       .update(posts)
-      .set({ ...data, lastActivityAt: new Date() })
+      .set({ ...data, lastActivityAt: new Date(), editedAt: new Date() })
       .where(and(eq(posts.id, id), eq(posts.authorId, authorId)))
       .returning();
     
@@ -44,7 +44,7 @@ export class DatabaseStorage implements IStorage {
   async updateComment(id: number, authorId: string, data: Partial<InsertComment>): Promise<Comment> {
     const [updatedComment] = await db
       .update(comments)
-      .set(data)
+      .set({ ...data, editedAt: new Date() })
       .where(and(eq(comments.id, id), eq(comments.authorId, authorId)))
       .returning();
     

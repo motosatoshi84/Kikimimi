@@ -18,6 +18,7 @@ export const posts = pgTable("posts", {
   isClosed: boolean("is_closed").notNull().default(false),
   lastActivityAt: timestamp("last_activity_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
+  editedAt: timestamp("edited_at"),
 });
 
 export const comments = pgTable("comments", {
@@ -27,6 +28,7 @@ export const comments = pgTable("comments", {
   authorId: varchar("author_id").notNull(), // Links to auth users
   ipOctet: varchar("ip_octet").notNull(), // Last 2 octets of IP
   createdAt: timestamp("created_at").defaultNow(),
+  editedAt: timestamp("edited_at"),
 });
 
 export const notifications = pgTable("notifications", {

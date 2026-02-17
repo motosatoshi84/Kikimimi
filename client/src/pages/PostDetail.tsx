@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatDistanceToNow, format } from "date-fns";
-import { ArrowLeft, SendHorizontal, Lock, MessageSquare, Edit2, Trash2, X, Check } from "lucide-react";
+import { ArrowLeft, SendHorizontal, Lock, MessageSquare, Edit2, Trash2, X, Check, Clock } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { z } from "zod";
@@ -132,19 +132,19 @@ export default function PostDetail() {
             </Link>
 
             {/* Post Content */}
-            <article className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <header className="mb-6 space-y-4">
-                <div className="flex justify-between items-start gap-4">
-                  <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground leading-tight text-balance flex-1">
+            <article className="mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <header className="mb-8 space-y-6">
+                <div className="flex justify-between items-start gap-6">
+                  <h1 className="text-4xl sm:text-5xl font-serif font-black text-foreground leading-[1.15] text-balance flex-1 tracking-tight">
                     {post.title}
                   </h1>
                   
                   {isAuthenticated && user?.id === post.authorId && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 bg-muted/20 p-1.5 rounded-2xl border border-border/40">
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-8 w-8 rounded-full"
+                        className="h-9 w-9 rounded-xl hover:bg-background hover:shadow-sm transition-all"
                         onClick={() => {
                           setEditingPost(true);
                           setEditValue(post.content);
@@ -155,19 +155,19 @@ export default function PostDetail() {
                       
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-destructive hover:text-destructive">
+                          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10 transition-all">
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="bg-background/95 backdrop-blur-md">
+                        <AlertDialogContent className="bg-background/98 backdrop-blur-xl border-border/40 shadow-2xl rounded-2xl">
                           <AlertDialogHeader>
-                            <AlertDialogTitle>{t.deleteConfirm}</AlertDialogTitle>
-                            <AlertDialogDescription>{t.deletePostDesc}</AlertDialogDescription>
+                            <AlertDialogTitle className="text-xl font-serif">{t.deleteConfirm}</AlertDialogTitle>
+                            <AlertDialogDescription className="text-base">{t.deletePostDesc}</AlertDialogDescription>
                           </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel className="rounded-xl">{t.cancel}</AlertDialogCancel>
+                          <AlertDialogFooter className="gap-2 sm:gap-0">
+                            <AlertDialogCancel className="rounded-xl border-border/60">{t.cancel}</AlertDialogCancel>
                             <AlertDialogAction 
-                              className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg shadow-destructive/20"
                               onClick={() => deletePost(post.id, { onSuccess: () => setLocation("/") })}
                             >
                               {t.delete}
@@ -179,36 +179,59 @@ export default function PostDetail() {
                   )}
                 </div>
                 
-                <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground border-b border-border/50 pb-6">
-                  {post.isClosed && (
-                    <Badge variant="destructive" className="font-sans">
-                      {t.closed}
+                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground/80 bg-muted/10 p-4 rounded-2xl border border-border/30">
+                  <div className="flex items-center gap-2">
+                    {post.isClosed && (
+                      <Badge variant="destructive" className="font-bold uppercase tracking-wider text-[10px] h-6 px-2">
+                        {t.closed}
+                      </Badge>
+                    )}
+                    {isArchived && !post.isClosed && (
+                      <Badge variant="secondary" className="font-bold uppercase tracking-wider text-[10px] h-6 px-2 bg-muted-foreground/10 text-muted-foreground border-none">
+                        {t.archived}
+                      </Badge>
+                    )}
+                    <Badge variant="secondary" className="capitalize h-6 px-2 bg-primary/10 text-primary border-none font-bold text-[10px] uppercase tracking-wider">
+                      {community === "japan" ? (
+                        post.category === "travel" ? "旅行" : 
+                        post.category === "health" ? "健康" : 
+                        post.category === "food" ? "グルメ" : 
+                        post.category === "lifestyle" ? "ライフスタイル" : 
+                        post.category === "tech" ? "IT・テック" : "その他"
+                      ) : (
+                        post.category === "travel" ? "여행" : 
+                        post.category === "health" ? "건강" : 
+                        post.category === "food" ? "맛집" : 
+                        post.category === "lifestyle" ? "라이프스타일" : 
+                        post.category === "tech" ? "테크" : "기타"
+                      )}
                     </Badge>
-                  )}
-                  {isArchived && !post.isClosed && (
-                    <Badge variant="secondary" className="font-sans">
-                      {t.archived}
-                    </Badge>
-                  )}
-                  <Badge variant="outline" className="font-mono bg-muted/50">
-                    IP: ...{post.ipOctet}
-                  </Badge>
-                  <span className="whitespace-nowrap">
-                    {post.createdAt && format(new Date(post.createdAt), community === "japan" ? 'yyyy年M月d日' : 'yyyy년 M월 d일', { locale: community === "japan" ? ja : ko })}
-                  </span>
-                  <span className="text-xs hidden sm:inline">•</span>
-                  <span className="whitespace-nowrap">
-                    {post.createdAt && format(new Date(post.createdAt), 'h:mm a')}
-                  </span>
-                  {post.editedAt && (
-                    <span className="text-xs italic bg-muted/50 px-1.5 py-0.5 rounded">
-                      {community === "japan" ? "編集済み" : "수정됨"}
-                    </span>
-                  )}
+                  </div>
+
+                  <div className="flex items-center gap-4 ml-auto">
+                    <div className="flex items-center gap-1.5 font-mono text-xs opacity-80">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                      IP: ...{post.ipOctet}
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 opacity-60" />
+                        {post.createdAt && format(new Date(post.createdAt), community === "japan" ? 'yyyy年M月d日' : 'yyyy년 M월 d일', { locale: community === "japan" ? ja : ko })}
+                      </span>
+                      <span className="hidden sm:inline font-medium opacity-60">
+                        {post.createdAt && format(new Date(post.createdAt), 'h:mm a')}
+                      </span>
+                      {post.editedAt && (
+                        <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/5 text-primary px-2 py-0.5 rounded-full border border-primary/10">
+                          {community === "japan" ? "編集済み" : "수정됨"}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </header>
 
-              <div className="prose prose-stone dark:prose-invert max-w-none text-lg leading-relaxed text-foreground/90 font-sans whitespace-pre-wrap">
+              <div className="prose prose-stone dark:prose-invert max-w-none text-xl leading-[1.8] text-foreground/90 font-sans whitespace-pre-wrap selection:bg-primary/10">
                 {editingPost ? (
                   <div className="space-y-4">
                     <Textarea 
@@ -265,34 +288,6 @@ export default function PostDetail() {
                         </AvatarFallback>
                       </Avatar>
                   <div className="flex-1 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-sm font-semibold text-foreground/80">{community === "japan" ? "ユーザー" : "사용자"} {comment.ipOctet}</span>
-                        {isAuthenticated && user?.id === comment.authorId && (
-                          <div className="flex gap-1">
-                            <button 
-                              className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                              onClick={() => {
-                                setEditingCommentId(comment.id);
-                                setEditValue(comment.content);
-                              }}
-                            >
-                              {t.edit}
-                            </button>
-                            <span className="text-[10px] text-muted-foreground/30">•</span>
-                            <button 
-                              className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
-                              onClick={() => {
-                                if (window.confirm(t.deleteConfirm)) {
-                                  deleteComment(comment.id);
-                                }
-                              }}
-                            >
-                              {t.delete}
-                            </button>
-                          </div>
-                        )}
-                      </div>
                       <span className="text-xs text-muted-foreground flex items-center gap-1.5">
                         {comment.editedAt && (
                           <span className="italic opacity-70">({community === "japan" ? "編集済み" : "수정됨"})</span>
@@ -329,12 +324,6 @@ export default function PostDetail() {
                       )}
                     </div>
                   </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </section>
-          </div>
 
           <aside className="lg:col-span-4">
             <div className="sticky top-28 space-y-6">

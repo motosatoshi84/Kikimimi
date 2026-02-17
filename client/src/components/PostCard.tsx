@@ -46,31 +46,32 @@ export function PostCard({ post }: PostCardProps) {
   };
 
   return (
-    <Link href={`/post/${post.id}`} className="block transition-transform hover:-translate-y-1 active:scale-[0.99] duration-200">
-      <Card className="h-full border-border/50 shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden bg-card/50 backdrop-blur-sm">
+    <Link href={`/post/${post.id}`} className="block transition-all hover:scale-[1.01] active:scale-[0.99] duration-200">
+      <Card className="h-full border-border/40 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all overflow-hidden bg-card/40 backdrop-blur-sm group">
         <CardHeader className="pb-3">
           <div className="flex justify-between items-start gap-4">
-            <CardTitle className="font-serif text-lg leading-snug line-clamp-2 text-balance">
-              {post.isClosed && <span className="text-destructive mr-2">[CLOSED]</span>}
+            <CardTitle className="font-serif text-xl leading-snug line-clamp-2 text-balance group-hover:text-primary transition-colors">
+              {post.isClosed && <span className="text-destructive mr-2 font-sans text-sm font-bold">[CLOSED]</span>}
               {post.title}
             </CardTitle>
-            <Badge variant="outline" className="capitalize shrink-0">
+            <Badge variant="secondary" className="capitalize shrink-0 bg-primary/10 text-primary border-none font-medium">
               {getCategoryLabel(post.category)}
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="pb-3">
-          <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 font-sans">
+        <CardContent className="pb-4">
+          <p className="text-muted-foreground/90 text-sm leading-relaxed line-clamp-3 font-sans">
             {preview}
           </p>
         </CardContent>
-        <CardFooter className="pt-0 text-xs text-muted-foreground flex justify-between items-center border-t border-border/30 mt-auto p-4 bg-muted/20">
-          <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="font-mono text-[10px] px-1.5 h-5 rounded-md">
-              IP: ...{post.ipOctet}
-            </Badge>
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+        <CardFooter className="pt-3 text-xs text-muted-foreground flex justify-between items-center border-t border-border/20 mt-auto p-4 bg-muted/5">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 bg-muted/30 px-2 py-1 rounded-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+              <span className="font-mono text-[10px] tracking-tight">IP: ...{post.ipOctet}</span>
+            </div>
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 opacity-60" />
               {post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { 
                 addSuffix: true,
                 locale: community === "japan" ? ja : ko
@@ -78,8 +79,9 @@ export function PostCard({ post }: PostCardProps) {
             </span>
           </div>
           
-          <div className="flex items-center text-primary font-medium">
+          <div className="flex items-center gap-1 text-primary font-semibold opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
              {community === "japan" ? "詳しく読む" : "자세히 보기"}
+             <span className="text-lg">→</span>
           </div>
         </CardFooter>
       </Card>

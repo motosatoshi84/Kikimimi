@@ -44,27 +44,30 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Feed */}
           <div className="lg:col-span-8 order-2 lg:order-1">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-              <div className="flex flex-col gap-2 text-center sm:text-left">
-                <h1 className="text-3xl sm:text-4xl font-serif font-bold text-foreground">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 pb-6 border-b border-border/40">
+              <div className="flex flex-col gap-3 text-center sm:text-left">
+                <h1 className="text-4xl sm:text-5xl font-serif font-black text-foreground tracking-tight">
                   {community === "japan" ? "コミュニティフィード" : "커뮤니티 피드"}
                 </h1>
-                <p className="text-muted-foreground text-lg">
+                <p className="text-muted-foreground text-lg sm:text-xl max-w-2xl leading-relaxed">
                   {community === "japan" 
-                    ? "匿名でアメリカに滞在している日本人が情報を共有できるところ。"
-                    : "미국에 거주하는 한국인들이 익명으로 정보를 공유할 수 있는 공간입니다."}
+                    ? "匿名でアメリカに滞在している日本人が情報を共有できる安全な場所です。"
+                    : "미국에 거주하는 한국인들이 익명으로 정보를 공유할 수 있는 안전한 공간입니다."}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 self-center sm:self-end">
-                <Filter className="w-4 h-4 text-muted-foreground" />
+              <div className="flex items-center gap-3 self-center sm:self-end bg-muted/20 p-1.5 rounded-2xl border border-border/40">
+                <div className="flex items-center gap-2 px-3 text-muted-foreground">
+                  <Filter className="w-4 h-4" />
+                  <span className="text-xs font-bold uppercase tracking-wider">{community === "japan" ? "絞り込み" : "필터"}</span>
+                </div>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="w-[180px] bg-background/95 backdrop-blur-md border-border/50 rounded-xl">
+                  <SelectTrigger className="w-[180px] bg-background border-none shadow-none rounded-xl focus:ring-1 focus:ring-primary/20">
                     <SelectValue placeholder={community === "japan" ? "カテゴリー" : "카테고리"} />
                   </SelectTrigger>
-                  <SelectContent className="bg-background/95 backdrop-blur-md border shadow-xl opacity-100">
+                  <SelectContent className="bg-background/95 backdrop-blur-xl border-border/40 shadow-2xl rounded-xl">
                     {categories.map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>
+                      <SelectItem key={cat.value} value={cat.value} className="rounded-lg m-1">
                         {cat.label}
                       </SelectItem>
                     ))}

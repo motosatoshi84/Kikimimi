@@ -135,7 +135,7 @@ export default function PostDetail() {
             <article className="mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
               <header className="mb-8 space-y-6">
                 <div className="flex justify-between items-start gap-6">
-                  <h1 className="text-4xl sm:text-5xl font-serif font-black text-foreground leading-[1.15] text-balance flex-1 tracking-tight">
+                  <h1 className="text-4xl sm:text-5xl font-serif font-black text-foreground leading-[1.15] break-words flex-1 tracking-tight">
                     {post.title}
                   </h1>
                   
@@ -180,18 +180,18 @@ export default function PostDetail() {
                 </div>
                 
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground/80 bg-muted/10 p-4 rounded-2xl border border-border/30">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     {post.isClosed && (
-                      <Badge variant="destructive" className="font-bold uppercase tracking-wider text-[10px] h-6 px-2">
+                      <Badge variant="destructive" className="font-bold uppercase tracking-wider text-[10px] h-6 px-2 whitespace-nowrap">
                         {t.closed}
                       </Badge>
                     )}
                     {isArchived && !post.isClosed && (
-                      <Badge variant="secondary" className="font-bold uppercase tracking-wider text-[10px] h-6 px-2 bg-muted-foreground/10 text-muted-foreground border-none">
+                      <Badge variant="secondary" className="font-bold uppercase tracking-wider text-[10px] h-6 px-2 bg-muted-foreground/10 text-muted-foreground border-none whitespace-nowrap">
                         {t.archived}
                       </Badge>
                     )}
-                    <Badge variant="secondary" className="capitalize h-6 px-2 bg-primary/10 text-primary border-none font-bold text-[10px] uppercase tracking-wider">
+                    <Badge variant="secondary" className="capitalize h-6 px-2 bg-primary/10 text-primary border-none font-bold text-[10px] uppercase tracking-wider whitespace-nowrap">
                       {community === "japan" ? (
                         post.category === "travel" ? "旅行" : 
                         post.category === "health" ? "健康" : 
@@ -231,7 +231,7 @@ export default function PostDetail() {
                 </div>
               </header>
 
-              <div className="prose prose-stone dark:prose-invert max-w-none text-xl leading-[1.8] text-foreground/90 font-sans whitespace-pre-wrap selection:bg-primary/10">
+              <div className="prose prose-stone dark:prose-invert max-w-none text-xl leading-[1.8] text-foreground/90 font-sans break-words whitespace-pre-wrap selection:bg-primary/10">
                 {editingPost ? (
                   <div className="space-y-4">
                     <Textarea 

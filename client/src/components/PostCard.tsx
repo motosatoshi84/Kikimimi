@@ -50,8 +50,8 @@ export function PostCard({ post }: PostCardProps) {
       <Card className="h-full border-border/40 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all overflow-hidden bg-card/40 backdrop-blur-sm group">
         <CardHeader className="pb-3">
           <div className="flex justify-between items-start gap-4">
-            <CardTitle className="font-serif text-xl leading-snug line-clamp-2 text-balance group-hover:text-primary transition-colors">
-              {post.isClosed && <span className="text-destructive mr-2 font-sans text-sm font-bold">[CLOSED]</span>}
+            <CardTitle className="font-serif text-xl leading-tight line-clamp-2 break-words group-hover:text-primary transition-colors">
+              {post.isClosed && <span className="text-destructive mr-2 font-sans text-sm font-bold whitespace-nowrap">[CLOSED]</span>}
               {post.title}
             </CardTitle>
             <Badge variant="secondary" className="capitalize shrink-0 bg-primary/10 text-primary border-none font-medium">

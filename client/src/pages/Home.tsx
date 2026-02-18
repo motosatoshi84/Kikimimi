@@ -57,10 +57,6 @@ export default function Home() {
               </div>
 
               <div className="flex items-center gap-3 self-center sm:self-end bg-muted/20 p-1.5 rounded-2xl border border-border/40">
-                <div className="flex items-center gap-2 px-3 text-muted-foreground">
-                  <Filter className="w-4 h-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider">{community === "japan" ? "絞り込み" : "필터"}</span>
-                </div>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger className="w-[180px] bg-background border-none shadow-none rounded-xl focus:ring-1 focus:ring-primary/20">
                     <SelectValue placeholder={community === "japan" ? "カテゴリー" : "카테고리"} />
